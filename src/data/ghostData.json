@@ -1,0 +1,12 @@
+{
+    "1": {
+        "optimalTime": 45,
+        "averageTime": 80,
+        "slowTime": 150
+    },
+    "2": {
+        "optimalTime": 35,
+        "averageTime": 65,
+        "slowTime": 120
+    }
+}
