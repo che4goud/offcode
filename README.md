@@ -12,6 +12,7 @@ Practice Blind 75 LeetCode problems completely offline with Python and JavaScrip
 - Performance tiers (Optimal / Average / Slow)
 
 ## Quick Start
+
 ```bash
 git clone https://github.com/che4goud/offcode.git
 cd offcode
@@ -20,15 +21,18 @@ npm run dev
 ```
 
 ## Production Build
+
 ```bash
 npm run build
 npx serve dist
 ```
 
 ## Install as App
+
 1. Open the deployed URL in Chrome/Edge
 2. Click the install icon in the URL bar
 3. The app works offline forever after first visit
 
 ## Tech Stack
+
 React 19 • Vite 7 • Monaco Editor • Pyodide • PWA (vite-plugin-pwa) • IndexedDB

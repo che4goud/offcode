@@ -1,6 +1,6 @@
 // executionService.js
 
-const TIMEOUT_MS = 3000;
+const TIMEOUT_MS = 30000;
 
 export async function executeCode(language, code, testCases = []) {
     return new Promise((resolve, reject) => {
