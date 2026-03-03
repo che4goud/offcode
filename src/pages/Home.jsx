@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import MatrixRain from '../components/MatrixRain';
+import FloatingParticles from '../components/FloatingParticles';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -10,171 +12,197 @@ const Home = () => {
     };
 
     return (
-        <div className="home-container" style={{
+        <div className="home-wrapper" style={{
+            position: 'relative',
             minHeight: '100vh',
-            background: 'var(--bg-main)',
-            color: 'var(--text-primary)',
+            background: '#0B0E14',
+            color: 'white',
             fontFamily: 'var(--font-sans)',
-            padding: '2rem 1rem',
-            overflowY: 'auto'
+            overflowX: 'hidden'
         }}>
-            {/* Hero Section */}
-            <section className="hero" style={{
-                textAlign: 'center',
-                padding: '4rem 0',
-                maxWidth: '800px',
-                margin: '0 auto'
+            {/* Background Layers */}
+            <MatrixRain />
+            <FloatingParticles />
+
+            {/* UI Content Layer */}
+            <div className="content-layer" style={{
+                position: 'relative',
+                zIndex: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '4rem 1rem',
+                minHeight: '100vh'
             }}>
-                <div style={{
-                    fontSize: '4rem',
-                    fontWeight: '700',
-                    color: 'var(--accent-primary)',
-                    marginBottom: '1rem'
-                }}>&lt;/&gt;</div>
-                <h1 style={{
-                    fontSize: '3.5rem',
-                    fontWeight: '800',
-                    marginBottom: '1rem',
-                    background: 'linear-gradient(135deg, var(--text-primary), var(--accent-primary))',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
-                }}>OffCode</h1>
-                <p style={{
-                    fontSize: '1.5rem',
-                    color: 'var(--text-secondary)',
-                    marginBottom: '2rem'
-                }}>Practice Blind 75 problems. Offline. Forever.</p>
-                <div style={{
-                    fontSize: '0.9rem',
-                    color: 'var(--text-tertiary)',
-                    marginBottom: '3rem',
-                    letterSpacing: '0.05em'
+
+                {/* Central Frosted Glass Card */}
+                <div className="main-card" style={{
+                    background: 'rgba(11, 14, 20, 0.6)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(59, 130, 246, 0.15)',
+                    borderRadius: '24px',
+                    padding: '3.5rem 2rem',
+                    textAlign: 'center',
+                    maxWidth: '800px',
+                    width: '100%',
+                    boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
+                    marginBottom: '3rem'
                 }}>
-                    76 Problems • Python & JS • 100% Offline • Free & Open Source
-                </div>
-                <button
-                    onClick={handleStart}
-                    className="btn"
-                    style={{
-                        fontSize: '1.25rem',
-                        padding: '1rem 2.5rem',
-                        background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
-                        borderRadius: '12px',
-                        boxShadow: '0 4px 20px rgba(59, 130, 246, 0.3)',
-                        transition: 'transform 0.2s, filter 0.2s'
-                    }}
-                >
-                    Start Solving →
-                </button>
-            </section>
+                    <div style={{
+                        fontSize: '3.5rem',
+                        color: '#3b82f6',
+                        marginBottom: '1rem',
+                        lineHeight: 1
+                    }}>&lt;/&gt;</div>
 
-            {/* Installation Cards */}
-            <section style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '1.5rem',
-                maxWidth: '1100px',
-                margin: '4rem auto'
-            }}>
-                <div className="panel" style={{ padding: '2rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span>📱</span> Install as App
-                    </h3>
-                    <ul style={{ listStyle: 'none', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.8' }}>
-                        <li>• Visit in Chrome or Edge</li>
-                        <li>• Click the install icon in your URL bar</li>
-                        <li>• Or use Menu → Install App</li>
-                        <li>• Works offline forever after first visit</li>
-                    </ul>
-                </div>
-                <div className="panel" style={{ padding: '2rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span>💻</span> Run Locally
-                    </h3>
-                    <code style={{
-                        display: 'block',
-                        background: 'rgba(0,0,0,0.3)',
-                        padding: '1rem',
-                        borderRadius: '8px',
-                        fontSize: '0.8rem',
-                        fontFamily: 'var(--font-mono)',
-                        color: 'var(--accent-primary)',
-                        lineHeight: '1.6'
+                    <h1 style={{
+                        fontSize: '4.5rem',
+                        fontWeight: '800',
+                        marginBottom: '0.5rem',
+                        color: 'white',
+                        textShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
+                    }}>OffCode</h1>
+
+                    <p style={{
+                        fontSize: '1.5rem',
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        marginBottom: '1rem',
+                        fontWeight: '500'
+                    }}>Practice Blind 75. Offline. Forever.</p>
+
+                    <div style={{
+                        fontSize: '1rem',
+                        color: '#3b82f6',
+                        marginBottom: '2.5rem',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em'
                     }}>
-                        git clone https://github.com/che4goud/offcode.git<br />
-                        cd offcode && npm install<br />
-                        npm run build<br />
-                        npx serve dist
-                    </code>
-                </div>
-                <div className="panel" style={{ padding: '2rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span>📦</span> Download & Run
-                    </h3>
-                    <ul style={{ listStyle: 'none', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.8' }}>
-                        <li>• Download the latest release from GitHub</li>
-                        <li>• Extract the ZIP</li>
-                        <li>• Open index.html in your browser</li>
-                    </ul>
-                </div>
-            </section>
+                        76 Problems • Python & JS • 100% Offline
+                    </div>
 
-            {/* Features Grid */}
-            <section style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                gap: '2rem',
-                maxWidth: '1100px',
-                margin: '4rem auto',
-                padding: '4rem 2rem',
-                borderTop: '1px solid var(--bg-panel-border)'
-            }}>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <span style={{ fontSize: '1.5rem' }}>⚡</span>
-                    <p style={{ color: 'var(--text-secondary)' }}>Run Python & JS in your browser — no server needed</p>
+                    <button
+                        onClick={handleStart}
+                        className="start-btn"
+                        style={{
+                            fontSize: '1.25rem',
+                            padding: '1.1rem 3rem',
+                            background: 'linear-gradient(135deg, #3b82f6, #9333ea)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '14px',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 10px 30px rgba(59, 130, 246, 0.4)'
+                        }}
+                    >
+                        Start Solving →
+                    </button>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <span style={{ fontSize: '1.5rem' }}>🔒</span>
-                    <p style={{ color: 'var(--text-secondary)' }}>No accounts, no tracking, no data leaves your device</p>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <span style={{ fontSize: '1.5rem' }}>SAVE</span>
-                    <p style={{ color: 'var(--text-secondary)' }}>Your code auto-saves locally between sessions</p>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <span style={{ fontSize: '1.5rem' }}>📶</span>
-                    <p style={{ color: 'var(--text-secondary)' }}>Works in airplane mode, trains, cafés — anywhere</p>
-                </div>
-            </section>
 
-            {/* Footer */}
-            <footer style={{
-                textAlign: 'center',
-                padding: '4rem 0',
-                borderTop: '1px solid var(--bg-panel-border)',
-                color: 'var(--text-tertiary)',
-                fontSize: '0.9rem'
-            }}>
-                <p style={{ marginBottom: '1rem' }}>Built with ❤️</p>
-                <a
-                    href="https://github.com/che4goud/offcode"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: 'var(--accent-primary)', textDecoration: 'none' }}
-                >
-                    View on GitHub
-                </a>
-            </footer>
+                {/* 3 Small Glass Cards */}
+                <div className="info-grid" style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: '1.5rem',
+                    maxWidth: '1100px',
+                    width: '100%',
+                    marginBottom: '4rem'
+                }}>
+                    <div className="info-card">
+                        <h3>📱 Install as App</h3>
+                        <p>Install via Chrome/Edge for a native standalone application experience.</p>
+                    </div>
+                    <div className="info-card">
+                        <h3>💻 Run Locally</h3>
+                        <p>Fully open source. Clone, build, and run on your own infrastructure.</p>
+                    </div>
+                    <div className="info-card">
+                        <h3>⚡ Instant Offline</h3>
+                        <p>Static assets are precached. The app works perfectly without any internet.</p>
+                    </div>
+                </div>
+
+                {/* 4 Feature Lines */}
+                <div className="feature-lines" style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    gap: '2.5rem',
+                    marginBottom: '4rem',
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: '1.1rem'
+                }}>
+                    <div className="feature-item"><span>⚡</span> Python & JS</div>
+                    <div className="feature-item"><span>🔒</span> No tracking</div>
+                    <div className="feature-item"><span>💾</span> Auto-saves</div>
+                    <div className="feature-item"><span>📶</span> Airplane mode</div>
+                </div>
+
+                {/* Footer */}
+                <footer style={{
+                    textAlign: 'center',
+                    color: 'rgba(255, 255, 255, 0.5)',
+                    fontSize: '0.95rem'
+                }}>
+                    <p>Built with ❤️ • <a href="https://github.com/che4goud/offcode" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>GitHub</a></p>
+                </footer>
+            </div>
 
             <style dangerouslySetInnerHTML={{
                 __html: `
-        .home-container .panel { transition: transform 0.3s ease, border-color 0.3s ease; }
-        .home-container .panel:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
-        @media (max-width: 768px) {
-          .hero h1 { font-size: 2.5rem; }
-          .hero p { font-size: 1.2rem; }
-        }
-      `}} />
+                .main-card {
+                    animation: fadeInDown 0.8s ease-out;
+                }
+                .start-btn:hover {
+                    transform: translateY(-3px) scale(1.02);
+                    box-shadow: 0 15px 40px rgba(59, 130, 246, 0.6);
+                    filter: brightness(1.1);
+                }
+                .info-card {
+                    background: rgba(11, 14, 20, 0.5);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(59, 130, 246, 0.1);
+                    border-radius: 20px;
+                    padding: 1.5rem;
+                    transition: all 0.3s ease;
+                }
+                .info-card:hover {
+                    border-color: rgba(59, 130, 246, 0.5);
+                    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+                    transform: translateY(-5px);
+                }
+                .info-card h3 {
+                    color: #3b82f6;
+                    margin-bottom: 0.75rem;
+                    font-size: 1.1rem;
+                }
+                .info-card p {
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 0.9rem;
+                    line-height: 1.5;
+                }
+                .feature-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+                .feature-item span {
+                    color: #3b82f6;
+                }
+                @keyframes fadeInDown {
+                    from { opacity: 0; transform: translateY(-30px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @media (max-width: 768px) {
+                    .main-card h1 { font-size: 3rem; }
+                    .main-card { padding: 2.5rem 1.5rem; }
+                }
+            `}} />
         </div>
     );
 };
