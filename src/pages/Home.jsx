@@ -66,9 +66,9 @@ const Home = () => {
                     <p style={{
                         fontSize: '1.5rem',
                         color: 'rgba(255, 255, 255, 0.9)',
-                        marginBottom: '1rem',
+                        marginBottom: '1.5rem',
                         fontWeight: '500'
-                    }}>Practice Blind 75. Offline. Forever.</p>
+                    }}>Practice Blind 75 problems offline. Load once, use forever.</p>
 
                     <div style={{
                         fontSize: '1rem',
@@ -97,34 +97,34 @@ const Home = () => {
                             alignItems: 'center',
                             gap: '0.75rem',
                             transition: 'all 0.3s ease',
-                            boxShadow: '0 10px 30px rgba(59, 130, 246, 0.4)'
+                            boxShadow: '0 10px 30px rgba(59, 130, 246, 0.4)',
+                            marginBottom: '1rem'
                         }}
                     >
                         Start Solving →
                     </button>
+                    <p style={{
+                        fontSize: '0.75rem',
+                        color: 'rgba(255, 255, 255, 0.4)',
+                        margin: 0
+                    }}>Works on Chrome, Edge, Firefox & Safari • No account needed</p>
                 </div>
 
-                {/* 3 Small Glass Cards */}
-                <div className="info-grid" style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: '1.5rem',
-                    maxWidth: '1100px',
+                {/* Single PWA Info Banner */}
+                <div style={{
+                    background: 'rgba(11, 14, 20, 0.4)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(59, 130, 246, 0.1)',
+                    borderRadius: '16px',
+                    padding: '1.25rem 2.5rem',
+                    textAlign: 'center',
+                    maxWidth: '800px',
                     width: '100%',
-                    marginBottom: '4rem'
+                    marginBottom: '4rem',
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    fontSize: '1rem'
                 }}>
-                    <div className="info-card">
-                        <h3>📱 Install as App</h3>
-                        <p>Install via Chrome/Edge for a native standalone application experience.</p>
-                    </div>
-                    <div className="info-card">
-                        <h3>💻 Run Locally</h3>
-                        <p>Fully open source. Clone, build, and run on your own infrastructure.</p>
-                    </div>
-                    <div className="info-card">
-                        <h3>⚡ Instant Offline</h3>
-                        <p>Static assets are precached. The app works perfectly without any internet.</p>
-                    </div>
+                    🌐 Just visit once — this app installs itself. Come back anytime, even without internet.
                 </div>
 
                 {/* 4 Feature Lines */}
