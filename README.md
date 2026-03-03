@@ -1,16 +1,34 @@
-# React + Vite
+# OffCode — Offline LeetCode Practice
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Practice Blind 75 LeetCode problems completely offline with Python and JavaScript.
 
-Currently, two official plugins are available:
+## Features
+- 76 Blind 75 problems with descriptions, starter code, and test cases
+- Python execution via Pyodide (WebAssembly) — no server needed
+- JavaScript execution via Web Workers
+- Monaco code editor with syntax highlighting
+- Auto-saves your code locally (IndexedDB)
+- Installable as a PWA — works in airplane mode
+- Performance tiers (Optimal / Average / Slow)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Quick Start
+```bash
+git clone https://github.com/che4goud/offcode.git
+cd offcode
+npm install
+npm run dev
+```
 
-## React Compiler
+## Production Build
+```bash
+npm run build
+npx serve dist
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Install as App
+1. Open the deployed URL in Chrome/Edge
+2. Click the install icon in the URL bar
+3. The app works offline forever after first visit
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+React 19 • Vite 7 • Monaco Editor • Pyodide • PWA (vite-plugin-pwa) • IndexedDB
