@@ -2,12 +2,14 @@ import React from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Editor from './pages/Editor';
+import UpdatePrompt from './components/UpdatePrompt';
 
 function App() {
   const isOnboarded = localStorage.getItem('offcode_onboarded') === 'true';
 
   return (
     <HashRouter>
+      <UpdatePrompt />
       <Routes>
         <Route path="/" element={isOnboarded ? <Navigate to="/editor" replace /> : <Home />} />
         <Route path="/editor" element={<Editor />} />

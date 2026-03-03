@@ -6,8 +6,11 @@ import { executeCode } from '../services/executionService';
 import { saveCode, getCode } from '../services/storage';
 import { Settings, Play, Check } from 'lucide-react';
 import problems from '../data/blind75.json';
+import OfflineIndicator from '../components/OfflineIndicator';
+import { useNavigate } from 'react-router-dom';
 
 function Editor() {
+    const navigate = useNavigate();
     const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
     const [language, setLanguage] = useState('python');
     const [code, setCode] = useState('');
@@ -82,9 +85,13 @@ function Editor() {
     return (
         <div className="app-container">
             <header className="app-header panel">
-                <div className="brand-title">
-                    <Settings size={20} className="text-accent-primary" />
-                    Offline LeetCode
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <button className="btn btn-secondary" onClick={() => { localStorage.removeItem('offcode_onboarded'); navigate('/'); }} style={{ padding: '0.4rem 0.75rem' }} title="Home">🏠</button>
+                    <div className="brand-title">
+                        <Settings size={20} className="text-accent-primary" />
+                        OffCode
+                    </div>
+                    <OfflineIndicator />
                 </div>
                 <div className="header-actions">
                     <select
