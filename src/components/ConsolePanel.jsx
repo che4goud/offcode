@@ -8,7 +8,9 @@ export default function ConsolePanel({ output, problemId }) {
     const isFinished = output && output.includes('Status:');
     const isAccepted = output && output.includes('Accepted');
     const isWrong = output && output.includes('Wrong Answer');
-    const isError = output && (output.includes('Error') || output.includes('Time Limit Exceeded'));
+    const isRuntimeError = output && output.includes('Runtime Error');
+    const isTLE = output && output.includes('Time Limit Exceeded');
+    const isError = isRuntimeError || isTLE || (output && output.includes('Error'));
 
     // Extract runtime
     const runtimeMatch = output?.match(/Runtime: (\d+)ms/);
@@ -60,7 +62,9 @@ export default function ConsolePanel({ output, problemId }) {
 
                                 {isAccepted ? 'Accepted' :
                                     isWrong ? 'Wrong Answer' :
-                                        isError ? 'Error / TLE' : 'Finished'}
+                                        isTLE ? 'Time Limit Exceeded' :
+                                            isRuntimeError ? 'Runtime Error' :
+                                                isError ? 'Error' : 'Finished'}
                             </div>
                         )}
 

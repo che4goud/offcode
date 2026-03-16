@@ -66,7 +66,16 @@ export async function executeCode(language, code, testCases = []) {
                 // Did we pass all test cases?
                 let status = 'Accepted';
                 if (data.results && data.results.some(r => !r.passed)) {
-                    status = 'Wrong Answer';
+                    // Check if the failure is just an assertion failing or a real runtime error
+                    const realError = data.results.find(r =>
+                        !r.passed && r.error && !r.error.includes('AssertionError') && !r.error.includes('Expected')
+                    );
+
+                    if (realError) {
+                        status = 'Runtime Error';
+                    } else {
+                        status = 'Wrong Answer';
+                    }
                 } else if (!data.results || data.results.length === 0) {
                     status = 'Finished'; // Just hit "Run", not submit
                 }

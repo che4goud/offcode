@@ -44,10 +44,26 @@ function Editor() {
         setConsoleOutput('Running...\n');
 
         try {
-            const res = await executeCode(language, code, []);
+            // Run the first min(3, testcases.length) tests to give basic feedback on Run
+            const allTests = problem.testCases[language] || [];
+            const exampleTests = allTests.slice(0, 3);
+            const res = await executeCode(language, code, exampleTests);
+
             let out = `Status: ${res.status}\nRuntime: ${res.runtime}\n`;
             if (res.error) out += `\nError:\n${res.error}`;
-            if (res.logs) out += `\nOutput:\n${res.logs}`;
+            if (res.logs) out += `\nOutput:\n${res.logs}\n`;
+
+            if (res.results && res.results.length > 0) {
+                const passed = res.results.filter(r => r.passed).length;
+                out += `\nPassed ${passed} / ${res.results.length} example testcases.`;
+
+                // Show first failing test error
+                const firstFailed = res.results.find(r => !r.passed);
+                if (firstFailed) {
+                    out += `\n\nTestcase ${firstFailed.testId + 1} Failed:\n${firstFailed.error}`;
+                }
+            }
+
             setConsoleOutput(out);
         } catch (e) {
             setConsoleOutput(`Error: ${e.message}`);
@@ -72,6 +88,12 @@ function Editor() {
             if (res.results && res.results.length > 0) {
                 const passed = res.results.filter(r => r.passed).length;
                 out += `\nPassed ${passed} / ${res.results.length} testcases.`;
+
+                // Show first failing test error
+                const firstFailed = res.results.find(r => !r.passed);
+                if (firstFailed) {
+                    out += `\n\nTestcase ${firstFailed.testId + 1} Failed:\n${firstFailed.error}`;
+                }
             }
 
             setConsoleOutput(out);
