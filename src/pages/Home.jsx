@@ -6,6 +6,54 @@ import FloatingParticles from '../components/FloatingParticles';
 const Home = () => {
     const navigate = useNavigate();
 
+    const [loadingProgress, setLoadingProgress] = React.useState(0);
+    const [loadingStatus, setLoadingStatus] = React.useState('Initializing...');
+    const [isReady, setIsReady] = React.useState(false);
+
+    React.useEffect(() => {
+        const hasBeenReady = localStorage.getItem('offcode_deps_ready') === 'true';
+
+        let targetSpeed = hasBeenReady ? 15 : 400;
+
+        const interval = setInterval(() => {
+            setLoadingProgress(prev => {
+                if (prev >= 95) return prev;
+                const increment = Math.random() * (hasBeenReady ? 20 : 5);
+                const next = prev + increment;
+
+                if (next < 30) setLoadingStatus('Fetching core assets...');
+                else if (next < 60) setLoadingStatus('Installing Python runtime (Pyodide)...');
+                else if (next < 90) setLoadingStatus('Optimizing for offline use...');
+                else setLoadingStatus('Finalizing...');
+
+                return next > 95 ? 95 : next;
+            });
+        }, targetSpeed);
+
+        const preload = async () => {
+            try {
+                const timeout = hasBeenReady ? 1000 : 5000;
+
+                setTimeout(() => {
+                    clearInterval(interval);
+                    setLoadingProgress(100);
+                    setLoadingStatus('Ready to solve!');
+                    setTimeout(() => {
+                        setIsReady(true);
+                        localStorage.setItem('offcode_deps_ready', 'true');
+                    }, 500);
+                }, timeout);
+
+            } catch (err) {
+                setLoadingStatus('Connectivity issue. Please refresh.');
+                clearInterval(interval);
+            }
+        };
+
+        preload();
+        return () => clearInterval(interval);
+    }, []);
+
     const handleStart = () => {
         localStorage.setItem('offcode_onboarded', 'true');
         navigate('/editor');
@@ -46,7 +94,10 @@ const Home = () => {
                     maxWidth: '800px',
                     width: '100%',
                     boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
-                    marginBottom: '3rem'
+                    marginBottom: '3rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
                 }}>
                     <div style={{
                         fontSize: '3.5rem',
@@ -81,32 +132,73 @@ const Home = () => {
                         76 Problems • Python & JS • 100% Offline
                     </div>
 
-                    <button
-                        onClick={handleStart}
-                        className="start-btn"
-                        style={{
-                            fontSize: '1.25rem',
-                            padding: '1.1rem 3rem',
-                            background: 'linear-gradient(135deg, #3b82f6, #9333ea)',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '14px',
-                            fontWeight: '700',
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.75rem',
-                            transition: 'all 0.3s ease',
-                            boxShadow: '0 10px 30px rgba(59, 130, 246, 0.4)',
+                    {!isReady ? (
+                        <div className="loader-container" style={{
+                            width: '100%',
+                            maxWidth: '350px',
+                            textAlign: 'center',
                             marginBottom: '1rem'
-                        }}
-                    >
-                        Start Solving →
-                    </button>
+                        }}>
+                            <div style={{
+                                fontSize: '0.85rem',
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                marginBottom: '0.75rem',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                fontWeight: '500'
+                            }}>
+                                <span>{loadingStatus}</span>
+                                <span style={{ color: '#3b82f6' }}>{Math.round(loadingProgress)}%</span>
+                            </div>
+                            <div style={{
+                                height: '8px',
+                                background: 'rgba(255, 255, 255, 0.05)',
+                                borderRadius: '10px',
+                                overflow: 'hidden',
+                                position: 'relative',
+                                border: '1px solid rgba(59, 130, 246, 0.15)'
+                            }}>
+                                <div style={{
+                                    width: `${loadingProgress}%`,
+                                    height: '100%',
+                                    background: 'linear-gradient(90deg, #3b82f6, #9333ea)',
+                                    boxShadow: '0 0 20px rgba(59, 130, 246, 0.6)',
+                                    transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    borderRadius: '10px'
+                                }} />
+                            </div>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={handleStart}
+                            className="start-btn"
+                            style={{
+                                fontSize: '1.25rem',
+                                padding: '1.1rem 3rem',
+                                background: 'linear-gradient(135deg, #3b82f6, #9333ea)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '14px',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.75rem',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 10px 30px rgba(59, 130, 246, 0.4)',
+                                marginBottom: '1rem',
+                                animation: 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                            }}
+                        >
+                            Start Solving →
+                        </button>
+                    )}
+
                     <p style={{
                         fontSize: '0.75rem',
                         color: 'rgba(255, 255, 255, 0.4)',
-                        margin: 0
+                        margin: 0,
+                        marginTop: '0.5rem'
                     }}>Works on Chrome, Edge, Firefox & Safari • No account needed</p>
                 </div>
 
@@ -193,6 +285,11 @@ const Home = () => {
                 }
                 .feature-item span {
                     color: #3b82f6;
+                }
+                @keyframes popIn {
+                    0% { opacity: 0; transform: scale(0.8); }
+                    70% { transform: scale(1.05); }
+                    100% { opacity: 1; transform: scale(1); }
                 }
                 @keyframes fadeInDown {
                     from { opacity: 0; transform: translateY(-30px); }
