@@ -104,6 +104,29 @@ function Editor() {
         }
     };
 
+    // Keyboard Shortcuts: Cmd/Ctrl + Enter (Run), Cmd/Ctrl + Shift + Enter (Submit)
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            const isMod = e.metaKey || e.ctrlKey;
+            const isShift = e.shiftKey;
+            const isEnter = e.key === 'Enter';
+
+            if (isMod && isEnter) {
+                e.preventDefault();
+                if (isRunning) return;
+
+                if (isShift) {
+                    handleSubmitCode();
+                } else {
+                    handleRunCode();
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isRunning, code, language, currentProblemIndex]); // Re-bind when state changes to ensure latest refs if needed, though handle functions are usually stable
+
     return (
         <div className="app-container">
             <header className="app-header panel">
@@ -126,10 +149,10 @@ function Editor() {
                             <option key={p.id} value={idx}>{p.id}. {p.title}</option>
                         ))}
                     </select>
-                    <button className="btn btn-secondary" disabled={isRunning} onClick={handleRunCode}>
+                    <button className="btn btn-secondary" disabled={isRunning} onClick={handleRunCode} title="Cmd/Ctrl + Enter">
                         {isRunning ? <div className="loader" /> : <Play size={16} />} Run Code
                     </button>
-                    <button className="btn btn-success" disabled={isRunning} onClick={handleSubmitCode}>
+                    <button className="btn btn-success" disabled={isRunning} onClick={handleSubmitCode} title="Cmd/Ctrl + Shift + Enter">
                         {isRunning ? <div className="loader" /> : <Check size={16} />} Submit
                     </button>
                 </div>
