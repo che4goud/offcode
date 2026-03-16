@@ -13,15 +13,8 @@ export default function EditorPanel({ language, setLanguage, code, setCode }) {
                 <select
                     value={language}
                     onChange={(e) => setLanguage(e.target.value)}
-                    style={{
-                        background: 'var(--bg-main)',
-                        color: 'var(--text-primary)',
-                        border: '1px solid var(--bg-panel-border)',
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        outline: 'none',
-                        fontSize: '0.8rem'
-                    }}
+                    className="custom-select"
+                    style={{ padding: '0.25rem 2rem 0.25rem 0.75rem', fontSize: '0.8rem' }}
                 >
                     <option value="python">Python</option>
                     <option value="javascript">JavaScript</option>

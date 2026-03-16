@@ -119,7 +119,8 @@ function Editor() {
                     <select
                         value={currentProblemIndex}
                         onChange={(e) => setCurrentProblemIndex(Number(e.target.value))}
-                        style={{ marginRight: '1rem', padding: '4px' }}
+                        className="custom-select"
+                        style={{ marginRight: '1rem' }}
                     >
                         {problems.map((p, idx) => (
                             <option key={p.id} value={idx}>{p.id}. {p.title}</option>

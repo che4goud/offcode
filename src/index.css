@@ -5,6 +5,7 @@
   font-display: swap;
   src: url('./assets/fonts/Inter-Regular.woff2') format('woff2');
 }
+
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -12,6 +13,7 @@
   font-display: swap;
   src: url('./assets/fonts/Inter-Medium.woff2') format('woff2');
 }
+
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -19,6 +21,7 @@
   font-display: swap;
   src: url('./assets/fonts/Inter-SemiBold.woff2') format('woff2');
 }
+
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -34,14 +37,14 @@
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-tertiary: #64748b;
-  
+
   --accent-primary: #3b82f6;
   --accent-secondary: #8b5cf6;
-  
+
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
-  
+
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
 }
@@ -59,7 +62,8 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
-  overflow: hidden; /* Avoid body scrolling, layout handles it */
+  overflow: auto;
+  /* Allow scrolling if window is small */
 }
 
 /* Glassmorphism Panel */
@@ -77,7 +81,7 @@ body {
 .panel-header {
   padding: 0.75rem 1.25rem;
   border-bottom: 1px solid var(--bg-panel-border);
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -102,12 +106,12 @@ body {
 }
 
 .panel-content::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
 
 .panel-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Split Pane Layout */
@@ -115,8 +119,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 0.5rem;
-  gap: 0.5rem;
+  padding: 1.25rem 1rem 1rem 1rem;
+  gap: 1rem;
 }
 
 .app-header {
@@ -166,10 +170,47 @@ body {
   font-weight: 700;
   background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.custom-select {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--bg-panel-border);
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+.custom-select:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.custom-select:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.custom-select option {
+  background: #1a1e26;
+  color: var(--text-primary);
+  padding: 10px;
 }
 
 .btn {
@@ -213,7 +254,8 @@ body {
 }
 
 .btn-success:hover {
-  background: #0ea5e9; /* Slight tweak on hover based on preference, or just brightness */
+  background: #0ea5e9;
+  /* Slight tweak on hover based on preference, or just brightness */
   filter: brightness(1.1);
 }
 
