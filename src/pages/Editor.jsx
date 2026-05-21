@@ -249,6 +249,12 @@ function Editor() {
                     </div>
                 </div>
             </main>
+            <div style={{ textAlign: 'center', padding: '0.3rem', fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}>
+                Built by Prathviraj Singh —{' '}
+                <a href="https://github.com/che4goud" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>GitHub</a>
+                {' · '}
+                <a href="https://www.linkedin.com/in/prathviraj-singh-goud-ab3749257/" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>LinkedIn</a>
+            </div>
         </div>
     );
 }
