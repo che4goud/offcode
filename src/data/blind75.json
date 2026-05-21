@@ -39,6 +39,16 @@
         "(() => { const _r = twoSum([5, 75, 25], 100); if (!_r || _r.length!==2 || !_r.includes(1) || !_r.includes(2) || [5, 75, 25][_r[0]]+[5, 75, 25][_r[1]]!==100) throw new Error('Expected [1, 2] but got '+JSON.stringify(_r)); return true; })()",
         "(() => { const _r = twoSum([1, 1000000000], 1000000001); if (!_r || _r.length!==2 || !_r.includes(0) || !_r.includes(1) || [1, 1000000000][_r[0]]+[1, 1000000000][_r[1]]!==1000000001) throw new Error('Expected [0, 1] but got '+JSON.stringify(_r)); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "Think about what complement you need for each number: if you need target - nums[i], can you check that in O(1)?",
+      "A hash map lets you store numbers you've already seen and look up complements instantly.",
+      "Iterate once: for each number, check if (target - number) is already in your map, then store the current number."
+    ],
+    "optimalSolution": {
+      "python": "def twoSum(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        comp = target - n\n        if comp in seen:\n            return [seen[comp], i]\n        seen[n] = i",
+      "javascript": "var twoSum = function(nums, target) {\n    const seen = {};\n    for (let i = 0; i < nums.length; i++) {\n        const comp = target - nums[i];\n        if (comp in seen) return [seen[comp], i];\n        seen[nums[i]] = i;\n    }\n};"
     }
   },
   {
@@ -85,6 +95,16 @@
         "(() => { const _r = maxProfit([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = maxProfit([-1]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "You must buy before you sell \u2014 so you only care about the minimum price seen so far up to day i.",
+      "Track a running minimum as you scan left to right, and compute today's profit as price - minSoFar.",
+      "One pass: update minPrice when you see a lower price, update maxProfit when you see a higher profit."
+    ],
+    "optimalSolution": {
+      "python": "def maxProfit(prices):\n    min_price, max_profit = float('inf'), 0\n    for p in prices:\n        min_price = min(min_price, p)\n        max_profit = max(max_profit, p - min_price)\n    return max_profit",
+      "javascript": "var maxProfit = function(prices) {\n    let minPrice = Infinity, maxProfit = 0;\n    for (const p of prices) {\n        minPrice = Math.min(minPrice, p);\n        maxProfit = Math.max(maxProfit, p - minPrice);\n    }\n    return maxProfit;\n};"
     }
   },
   {
@@ -131,6 +151,16 @@
         "(() => { const _r = containsDuplicate([]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = containsDuplicate([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "If any value appears twice, a set will be smaller than the array.",
+      "You can also iterate and add to a set \u2014 return True the moment you try to add something already in it.",
+      "Sorting first makes duplicates adjacent, but that's O(n log n); a hash set is O(n)."
+    ],
+    "optimalSolution": {
+      "python": "def containsDuplicate(nums):\n    return len(nums) != len(set(nums))",
+      "javascript": "var containsDuplicate = function(nums) {\n    return new Set(nums).size !== nums.length;\n};"
     }
   },
   {
@@ -177,6 +207,16 @@
         "(() => { const _r = productExceptSelf([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = productExceptSelf([-1]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "product[i] = (product of everything to the left of i) \u00d7 (product of everything to the right of i).",
+      "Compute a prefix-product array in one pass, then multiply by a running suffix product in a second pass.",
+      "You can do this in O(1) extra space (output array doesn't count) by storing prefix products in the result and multiplying the suffix in-place on the second pass."
+    ],
+    "optimalSolution": {
+      "python": "def productExceptSelf(nums):\n    n = len(nums)\n    res = [1] * n\n    prefix = 1\n    for i in range(n):\n        res[i] = prefix\n        prefix *= nums[i]\n    suffix = 1\n    for i in range(n - 1, -1, -1):\n        res[i] *= suffix\n        suffix *= nums[i]\n    return res",
+      "javascript": "var productExceptSelf = function(nums) {\n    const n = nums.length, res = new Array(n).fill(1);\n    let prefix = 1;\n    for (let i = 0; i < n; i++) { res[i] = prefix; prefix *= nums[i]; }\n    let suffix = 1;\n    for (let i = n - 1; i >= 0; i--) { res[i] *= suffix; suffix *= nums[i]; }\n    return res;\n};"
     }
   },
   {
@@ -223,6 +263,16 @@
         "(() => { const _r = maxSubArray([]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = maxSubArray([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "Kadane's algorithm: decide at each index whether to extend the current subarray or start fresh.",
+      "If the running sum goes negative, it only hurts any extension \u2014 reset it to 0 (start a new subarray here).",
+      "Track the maximum sum seen at any point; that's your answer."
+    ],
+    "optimalSolution": {
+      "python": "def maxSubArray(nums):\n    max_sum = cur = nums[0]\n    for n in nums[1:]:\n        cur = max(n, cur + n)\n        max_sum = max(max_sum, cur)\n    return max_sum",
+      "javascript": "var maxSubArray = function(nums) {\n    let maxSum = nums[0], cur = nums[0];\n    for (let i = 1; i < nums.length; i++) {\n        cur = Math.max(nums[i], cur + nums[i]);\n        maxSum = Math.max(maxSum, cur);\n    }\n    return maxSum;\n};"
     }
   },
   {
@@ -269,6 +319,16 @@
         "(() => { const _r = maxProduct([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = maxProduct([-1]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "Negative \u00d7 negative = positive, so you need to track both the max and min product ending here.",
+      "At each step: new max = max(num, maxSoFar*num, minSoFar*num); new min = min of the same three choices.",
+      "A single zero resets both running products to 1 (effectively starting a new subarray)."
+    ],
+    "optimalSolution": {
+      "python": "def maxProduct(nums):\n    res = max(nums)\n    cur_min = cur_max = 1\n    for n in nums:\n        if n == 0:\n            cur_min = cur_max = 1\n            continue\n        tmp = cur_max * n\n        cur_max = max(n, tmp, cur_min * n)\n        cur_min = min(n, tmp, cur_min * n)\n        res = max(res, cur_max)\n    return res",
+      "javascript": "var maxProduct = function(nums) {\n    let res = Math.max(...nums), curMin = 1, curMax = 1;\n    for (const n of nums) {\n        if (n === 0) { curMin = curMax = 1; continue; }\n        const tmp = curMax * n;\n        curMax = Math.max(n, tmp, curMin * n);\n        curMin = Math.min(n, tmp, curMin * n);\n        res = Math.max(res, curMax);\n    }\n    return res;\n};"
     }
   },
   {
@@ -315,6 +375,16 @@
         "(() => { const _r = findMin([]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = findMin([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "Binary search works because one half is always fully sorted.",
+      "If nums[mid] > nums[right], the minimum is in the right half; otherwise it's in the left half (including mid).",
+      "When left == right you've converged on the minimum."
+    ],
+    "optimalSolution": {
+      "python": "def findMin(nums):\n    l, r = 0, len(nums) - 1\n    while l < r:\n        mid = (l + r) // 2\n        if nums[mid] > nums[r]:\n            l = mid + 1\n        else:\n            r = mid\n    return nums[l]",
+      "javascript": "var findMin = function(nums) {\n    let l = 0, r = nums.length - 1;\n    while (l < r) {\n        const mid = (l + r) >> 1;\n        if (nums[mid] > nums[r]) l = mid + 1;\n        else r = mid;\n    }\n    return nums[l];\n};"
     }
   },
   {
@@ -361,6 +431,16 @@
         "(() => { const _r = search([], 1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = search([0], -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "Standard binary search doesn't work directly, but one of the two halves is always sorted \u2014 figure out which one.",
+      "If nums[left] <= nums[mid], the left half is sorted. Check if target falls in [left, mid]; if so, search left, else right.",
+      "Apply the symmetric logic for when the right half is sorted."
+    ],
+    "optimalSolution": {
+      "python": "def search(nums, target):\n    l, r = 0, len(nums) - 1\n    while l <= r:\n        mid = (l + r) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[l] <= nums[mid]:\n            if nums[l] <= target < nums[mid]:\n                r = mid - 1\n            else:\n                l = mid + 1\n        else:\n            if nums[mid] < target <= nums[r]:\n                l = mid + 1\n            else:\n                r = mid - 1\n    return -1",
+      "javascript": "var search = function(nums, target) {\n    let l = 0, r = nums.length - 1;\n    while (l <= r) {\n        const mid = (l + r) >> 1;\n        if (nums[mid] === target) return mid;\n        if (nums[l] <= nums[mid]) {\n            if (nums[l] <= target && target < nums[mid]) r = mid - 1;\n            else l = mid + 1;\n        } else {\n            if (nums[mid] < target && target <= nums[r]) l = mid + 1;\n            else r = mid - 1;\n        }\n    }\n    return -1;\n};"
     }
   },
   {
@@ -407,6 +487,16 @@
         "(() => { const _r = threeSum([]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = threeSum([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "Sort the array first \u2014 it makes deduplication trivial and enables the two-pointer technique.",
+      "Fix one element nums[i], then use two pointers (left=i+1, right=end) to find pairs that sum to -nums[i].",
+      "Skip duplicate values of nums[i] and also skip duplicate values found by the two pointers to avoid duplicate triplets."
+    ],
+    "optimalSolution": {
+      "python": "def threeSum(nums):\n    nums.sort()\n    res = []\n    for i, a in enumerate(nums):\n        if i > 0 and a == nums[i - 1]:\n            continue\n        l, r = i + 1, len(nums) - 1\n        while l < r:\n            s = a + nums[l] + nums[r]\n            if s > 0:\n                r -= 1\n            elif s < 0:\n                l += 1\n            else:\n                res.append([a, nums[l], nums[r]])\n                l += 1\n                while l < r and nums[l] == nums[l - 1]:\n                    l += 1\n    return res",
+      "javascript": "var threeSum = function(nums) {\n    nums.sort((a, b) => a - b);\n    const res = [];\n    for (let i = 0; i < nums.length - 2; i++) {\n        if (i > 0 && nums[i] === nums[i - 1]) continue;\n        let l = i + 1, r = nums.length - 1;\n        while (l < r) {\n            const s = nums[i] + nums[l] + nums[r];\n            if (s > 0) r--;\n            else if (s < 0) l++;\n            else {\n                res.push([nums[i], nums[l++], nums[r--]]);\n                while (l < r && nums[l] === nums[l - 1]) l++;\n            }\n        }\n    }\n    return res;\n};"
     }
   },
   {
@@ -453,6 +543,16 @@
         "(() => { const _r = maxArea([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = maxArea([-1]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Arrays",
+    "hints": [
+      "The area is limited by the shorter line \u2014 moving the shorter pointer inward is the only way to potentially find more water.",
+      "Use two pointers starting at both ends; greedily move the pointer at the shorter height.",
+      "You never need to try all pairs: any inward move that keeps the taller height can only produce smaller or equal area."
+    ],
+    "optimalSolution": {
+      "python": "def maxArea(height):\n    l, r = 0, len(height) - 1\n    max_water = 0\n    while l < r:\n        max_water = max(max_water, min(height[l], height[r]) * (r - l))\n        if height[l] < height[r]:\n            l += 1\n        else:\n            r -= 1\n    return max_water",
+      "javascript": "var maxArea = function(height) {\n    let l = 0, r = height.length - 1, maxWater = 0;\n    while (l < r) {\n        maxWater = Math.max(maxWater, Math.min(height[l], height[r]) * (r - l));\n        if (height[l] < height[r]) l++; else r--;\n    }\n    return maxWater;\n};"
     }
   },
   {
@@ -499,6 +599,16 @@
         "(() => { const _r = lengthOfLongestSubstring(\"\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = lengthOfLongestSubstring(\"a\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Sliding Window",
+    "hints": [
+      "Use a sliding window with a set to track which characters are currently inside the window.",
+      "Expand the right pointer; when a duplicate appears, shrink from the left until it's gone.",
+      "Track the maximum window length seen at each step."
+    ],
+    "optimalSolution": {
+      "python": "def lengthOfLongestSubstring(s):\n    seen = {}\n    l = res = 0\n    for r, c in enumerate(s):\n        if c in seen and seen[c] >= l:\n            l = seen[c] + 1\n        seen[c] = r\n        res = max(res, r - l + 1)\n    return res",
+      "javascript": "var lengthOfLongestSubstring = function(s) {\n    const seen = {};\n    let l = 0, res = 0;\n    for (let r = 0; r < s.length; r++) {\n        if (s[r] in seen && seen[s[r]] >= l) l = seen[s[r]] + 1;\n        seen[s[r]] = r;\n        res = Math.max(res, r - l + 1);\n    }\n    return res;\n};"
     }
   },
   {
@@ -545,6 +655,16 @@
         "(() => { const _r = characterReplacement(\"a\", -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = characterReplacement(\"aa\", 2147483647); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Sliding Window",
+    "hints": [
+      "Use a sliding window; the key insight is that a valid window of length k needs at most k - maxCount replacements.",
+      "Track the frequency of each character in the window and the count of the most frequent character.",
+      "If (window_length - maxCount) > k, shrink from the left. You never need to recompute maxCount downward \u2014 only upward changes matter."
+    ],
+    "optimalSolution": {
+      "python": "def characterReplacement(s, k):\n    count = {}\n    l = res = max_count = 0\n    for r, c in enumerate(s):\n        count[c] = count.get(c, 0) + 1\n        max_count = max(max_count, count[c])\n        while (r - l + 1) - max_count > k:\n            count[s[l]] -= 1\n            l += 1\n        res = max(res, r - l + 1)\n    return res",
+      "javascript": "var characterReplacement = function(s, k) {\n    const count = {};\n    let l = 0, res = 0, maxCount = 0;\n    for (let r = 0; r < s.length; r++) {\n        count[s[r]] = (count[s[r]] || 0) + 1;\n        maxCount = Math.max(maxCount, count[s[r]]);\n        while ((r - l + 1) - maxCount > k) { count[s[l]]--; l++; }\n        res = Math.max(res, r - l + 1);\n    }\n    return res;\n};"
     }
   },
   {
@@ -591,6 +711,16 @@
         "(() => { const _r = minWindow(\"\", \"a\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = minWindow(\"a\", \"aa\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Sliding Window",
+    "hints": [
+      "Use a sliding window with two frequency maps: one for the required characters in t, one for the current window.",
+      "Expand the right pointer; when all required characters are satisfied, try shrinking from the left to minimize the window.",
+      "Track 'have' (satisfied unique chars) vs 'need' (total unique chars in t) \u2014 shrink when have == need."
+    ],
+    "optimalSolution": {
+      "python": "from collections import Counter\ndef minWindow(s, t):\n    if not t: return ''\n    need, window = Counter(t), {}\n    have, total = 0, len(need)\n    res, res_len = [-1, -1], float('inf')\n    l = 0\n    for r, c in enumerate(s):\n        window[c] = window.get(c, 0) + 1\n        if c in need and window[c] == need[c]:\n            have += 1\n        while have == total:\n            if (r - l + 1) < res_len:\n                res, res_len = [l, r], r - l + 1\n            window[s[l]] -= 1\n            if s[l] in need and window[s[l]] < need[s[l]]:\n                have -= 1\n            l += 1\n    l, r = res\n    return s[l:r+1] if res_len != float('inf') else ''",
+      "javascript": "var minWindow = function(s, t) {\n    if (!t) return '';\n    const need = {}, window = {};\n    for (const c of t) need[c] = (need[c] || 0) + 1;\n    let have = 0, total = Object.keys(need).length;\n    let l = 0, resL = -1, resLen = Infinity;\n    for (let r = 0; r < s.length; r++) {\n        window[s[r]] = (window[s[r]] || 0) + 1;\n        if (s[r] in need && window[s[r]] === need[s[r]]) have++;\n        while (have === total) {\n            if (r - l + 1 < resLen) { resLen = r - l + 1; resL = l; }\n            window[s[l]]--;\n            if (s[l] in need && window[s[l]] < need[s[l]]) have--;\n            l++;\n        }\n    }\n    return resLen === Infinity ? '' : s.slice(resL, resL + resLen);\n};"
     }
   },
   {
@@ -637,6 +767,16 @@
         "(() => { const _r = isAnagram(\"a\", \"aa\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = isAnagram(\"aa\", \"ab\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "String",
+    "hints": [
+      "Two strings are anagrams if they have the same character frequencies.",
+      "Sort both strings and compare \u2014 but that's O(n log n).",
+      "Better: use a frequency counter (hash map or fixed-size array for 26 letters), increment for s, decrement for t, check all zeros."
+    ],
+    "optimalSolution": {
+      "python": "from collections import Counter\ndef isAnagram(s, t):\n    return Counter(s) == Counter(t)",
+      "javascript": "var isAnagram = function(s, t) {\n    if (s.length !== t.length) return false;\n    const count = {};\n    for (const c of s) count[c] = (count[c] || 0) + 1;\n    for (const c of t) {\n        if (!count[c]) return false;\n        count[c]--;\n    }\n    return true;\n};"
     }
   },
   {
@@ -683,6 +823,16 @@
         "(() => { const _r = groupAnagrams([\"a\", \"b\"]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = groupAnagrams([\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "String",
+    "hints": [
+      "Anagrams share the same sorted characters \u2014 use sorted(word) as a hash map key.",
+      "Group words by their sorted key; the values are your anagram groups.",
+      "Alternatively, use a tuple of character counts (26-element) as the key for an O(n*k) solution."
+    ],
+    "optimalSolution": {
+      "python": "from collections import defaultdict\ndef groupAnagrams(strs):\n    groups = defaultdict(list)\n    for s in strs:\n        groups[tuple(sorted(s))].append(s)\n    return list(groups.values())",
+      "javascript": "var groupAnagrams = function(strs) {\n    const map = {};\n    for (const s of strs) {\n        const key = s.split('').sort().join('');\n        if (!map[key]) map[key] = [];\n        map[key].push(s);\n    }\n    return Object.values(map);\n};"
     }
   },
   {
@@ -729,6 +879,16 @@
         "(() => { const _r = isValid(\"abcdefghij\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = isValid(\"zzzzzz\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "String",
+    "hints": [
+      "Use a stack: push open brackets, pop when you see a closing bracket.",
+      "When you see a closing bracket, the top of the stack must be the matching open bracket.",
+      "The string is valid if the stack is empty at the end."
+    ],
+    "optimalSolution": {
+      "python": "def isValid(s):\n    stack = []\n    pairs = {')': '(', '}': '{', ']': '['}\n    for c in s:\n        if c in pairs:\n            if not stack or stack[-1] != pairs[c]:\n                return False\n            stack.pop()\n        else:\n            stack.append(c)\n    return not stack",
+      "javascript": "var isValid = function(s) {\n    const stack = [], pairs = {')': '(', '}': '{', ']': '['};\n    for (const c of s) {\n        if (c in pairs) {\n            if (!stack.length || stack[stack.length-1] !== pairs[c]) return false;\n            stack.pop();\n        } else stack.push(c);\n    }\n    return stack.length === 0;\n};"
     }
   },
   {
@@ -775,6 +935,16 @@
         "(() => { const _r = isPalindrome(\"\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = isPalindrome(\"a\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "String",
+    "hints": [
+      "Strip non-alphanumeric characters and lowercase, then check if it equals its reverse.",
+      "Or use two pointers from both ends, skipping non-alphanumeric characters.",
+      "Two-pointer is O(1) space; the string-cleaning approach uses O(n) extra space."
+    ],
+    "optimalSolution": {
+      "python": "def isPalindrome(s):\n    l, r = 0, len(s) - 1\n    while l < r:\n        while l < r and not s[l].isalnum(): l += 1\n        while l < r and not s[r].isalnum(): r -= 1\n        if s[l].lower() != s[r].lower(): return False\n        l += 1; r -= 1\n    return True",
+      "javascript": "var isPalindrome = function(s) {\n    let l = 0, r = s.length - 1;\n    const isAlnum = c => /[a-zA-Z0-9]/.test(c);\n    while (l < r) {\n        while (l < r && !isAlnum(s[l])) l++;\n        while (l < r && !isAlnum(s[r])) r--;\n        if (s[l].toLowerCase() !== s[r].toLowerCase()) return false;\n        l++; r--;\n    }\n    return true;\n};"
     }
   },
   {
@@ -821,6 +991,16 @@
         "(() => { const _r = longestPalindrome(\"a\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = longestPalindrome(\"aa\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "String",
+    "hints": [
+      "Expand around center: for each index, try expanding both odd-length (center at i) and even-length (center between i and i+1) palindromes.",
+      "Track the start and end of the longest expansion seen.",
+      "This is O(n\u00b2) time, O(1) space \u2014 sufficient for this problem."
+    ],
+    "optimalSolution": {
+      "python": "def longestPalindrome(s):\n    res_l = res_r = 0\n    def expand(l, r):\n        nonlocal res_l, res_r\n        while l >= 0 and r < len(s) and s[l] == s[r]:\n            if r - l > res_r - res_l:\n                res_l, res_r = l, r\n            l -= 1; r += 1\n    for i in range(len(s)):\n        expand(i, i)\n        expand(i, i + 1)\n    return s[res_l:res_r + 1]",
+      "javascript": "var longestPalindrome = function(s) {\n    let resL = 0, resR = 0;\n    function expand(l, r) {\n        while (l >= 0 && r < s.length && s[l] === s[r]) {\n            if (r - l > resR - resL) { resL = l; resR = r; }\n            l--; r++;\n        }\n    }\n    for (let i = 0; i < s.length; i++) { expand(i, i); expand(i, i+1); }\n    return s.slice(resL, resR + 1);\n};"
     }
   },
   {
@@ -867,6 +1047,16 @@
         "(() => { const _r = countSubstrings(\"a\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = countSubstrings(\"aa\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "String",
+    "hints": [
+      "Same expand-around-center technique as Longest Palindromic Substring.",
+      "Count every valid expansion (each time s[l] == s[r] while expanding, it's a new palindromic substring).",
+      "Remember to check both odd (center at i) and even (center between i and i+1) palindromes."
+    ],
+    "optimalSolution": {
+      "python": "def countSubstrings(s):\n    count = 0\n    def expand(l, r):\n        nonlocal count\n        while l >= 0 and r < len(s) and s[l] == s[r]:\n            count += 1\n            l -= 1; r += 1\n    for i in range(len(s)):\n        expand(i, i)\n        expand(i, i + 1)\n    return count",
+      "javascript": "var countSubstrings = function(s) {\n    let count = 0;\n    function expand(l, r) {\n        while (l >= 0 && r < s.length && s[l] === s[r]) { count++; l--; r++; }\n    }\n    for (let i = 0; i < s.length; i++) { expand(i, i); expand(i, i+1); }\n    return count;\n};"
     }
   },
   {
@@ -875,8 +1065,8 @@
     "difficulty": "Medium",
     "description": "",
     "starterCode": {
-      "python": "",
-      "javascript": ""
+      "python": "class Codec:\n    def encode(self, strs: list[str]) -> str:\n        pass\n\n    def decode(self, s: str) -> list[str]:\n        pass",
+      "javascript": "/**\n * Encodes a list of strings to a single string.\n * @param {string[]} strs\n * @return {string}\n */\nvar encode = function(strs) {\n\n};\n\n/**\n * Decodes a single string to a list of strings.\n * @param {string} s\n * @return {string[]}\n */\nvar decode = function(s) {\n\n};"
     },
     "testCases": {
       "python": [
@@ -913,6 +1103,16 @@
         "(() => { const _r = encode(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = encode(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "String",
+    "hints": [
+      "You need a delimiter that won't appear in the strings \u2014 or encode the length explicitly.",
+      "Length-prefixed encoding: for each string, write its length + a separator character, then the string itself.",
+      "To decode, read the length, skip the separator, then read exactly that many characters."
+    ],
+    "optimalSolution": {
+      "python": "def encode(strs):\n    return ''.join(f'{len(s)}#{s}' for s in strs)\n\ndef decode(s):\n    res, i = [], 0\n    while i < len(s):\n        j = s.index('#', i)\n        length = int(s[i:j])\n        res.append(s[j+1:j+1+length])\n        i = j + 1 + length\n    return res",
+      "javascript": "function encode(strs) {\n    return strs.map(s => `${s.length}#${s}`).join('');\n}\nfunction decode(s) {\n    const res = [];\n    let i = 0;\n    while (i < s.length) {\n        const j = s.indexOf('#', i);\n        const len = parseInt(s.slice(i, j));\n        res.push(s.slice(j + 1, j + 1 + len));\n        i = j + 1 + len;\n    }\n    return res;\n}"
     }
   },
   {
@@ -959,6 +1159,16 @@
         "(() => { const _r = maxDepth(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = maxDepth(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "The depth of a tree is 1 + max(depth of left subtree, depth of right subtree).",
+      "A null node has depth 0 \u2014 that's your base case.",
+      "Both DFS (recursive or iterative with a stack) and BFS (level-order with a queue) work."
+    ],
+    "optimalSolution": {
+      "python": "def maxDepth(root):\n    if not root: return 0\n    return 1 + max(maxDepth(root.left), maxDepth(root.right))",
+      "javascript": "var maxDepth = function(root) {\n    if (!root) return 0;\n    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n};"
     }
   },
   {
@@ -1005,6 +1215,16 @@
         "(() => { const _r = isSameTree(0, 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = isSameTree(0, 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "Two trees are the same if their roots have the same value and their left and right subtrees are also the same.",
+      "Base cases: two nulls are the same; a null and a non-null are different.",
+      "Simple recursive solution: return p.val == q.val and sameTree(p.left, q.left) and sameTree(p.right, q.right)."
+    ],
+    "optimalSolution": {
+      "python": "def isSameTree(p, q):\n    if not p and not q: return True\n    if not p or not q or p.val != q.val: return False\n    return isSameTree(p.left, q.left) and isSameTree(p.right, q.right)",
+      "javascript": "var isSameTree = function(p, q) {\n    if (!p && !q) return true;\n    if (!p || !q || p.val !== q.val) return false;\n    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);\n};"
     }
   },
   {
@@ -1051,6 +1271,16 @@
         "(() => { const _r = invertTree(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = invertTree(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "Swap the left and right children of every node.",
+      "Recursively invert the left subtree, invert the right subtree, then swap.",
+      "You can also do this iteratively with a queue (BFS) or stack (DFS)."
+    ],
+    "optimalSolution": {
+      "python": "def invertTree(root):\n    if not root: return None\n    root.left, root.right = invertTree(root.right), invertTree(root.left)\n    return root",
+      "javascript": "var invertTree = function(root) {\n    if (!root) return null;\n    [root.left, root.right] = [invertTree(root.right), invertTree(root.left)];\n    return root;\n};"
     }
   },
   {
@@ -1097,6 +1327,16 @@
         "(() => { const _r = maxPathSum(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = maxPathSum(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "A path can go through any node \u2014 but can only turn once (at the highest node in the path).",
+      "For each node, compute the max gain you get from its left child and right child (ignore negative gains by clamping to 0).",
+      "The candidate answer at each node is node.val + leftGain + rightGain. Return only node.val + max(leftGain, rightGain) to the parent (can't use both sides in a parent's path)."
+    ],
+    "optimalSolution": {
+      "python": "def maxPathSum(root):\n    res = [root.val]\n    def dfs(node):\n        if not node: return 0\n        left = max(dfs(node.left), 0)\n        right = max(dfs(node.right), 0)\n        res[0] = max(res[0], node.val + left + right)\n        return node.val + max(left, right)\n    dfs(root)\n    return res[0]",
+      "javascript": "var maxPathSum = function(root) {\n    let res = root.val;\n    function dfs(node) {\n        if (!node) return 0;\n        const left = Math.max(dfs(node.left), 0);\n        const right = Math.max(dfs(node.right), 0);\n        res = Math.max(res, node.val + left + right);\n        return node.val + Math.max(left, right);\n    }\n    dfs(root);\n    return res;\n};"
     }
   },
   {
@@ -1143,6 +1383,16 @@
         "(() => { const _r = levelOrder(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = levelOrder(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "Use BFS with a queue; process nodes level by level.",
+      "At the start of each level, record the current queue size \u2014 that's how many nodes belong to this level.",
+      "Collect node values for each level into a sub-list."
+    ],
+    "optimalSolution": {
+      "python": "from collections import deque\ndef levelOrder(root):\n    if not root: return []\n    res, q = [], deque([root])\n    while q:\n        level = []\n        for _ in range(len(q)):\n            node = q.popleft()\n            level.append(node.val)\n            if node.left: q.append(node.left)\n            if node.right: q.append(node.right)\n        res.append(level)\n    return res",
+      "javascript": "var levelOrder = function(root) {\n    if (!root) return [];\n    const res = [], q = [root];\n    while (q.length) {\n        const level = [], size = q.length;\n        for (let i = 0; i < size; i++) {\n            const node = q.shift();\n            level.push(node.val);\n            if (node.left) q.push(node.left);\n            if (node.right) q.push(node.right);\n        }\n        res.push(level);\n    }\n    return res;\n};"
     }
   },
   {
@@ -1189,6 +1439,16 @@
         "(() => { const _r = Codec(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = Codec(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "BFS (level-order) serialization is easiest: write each node's value, use 'null' for missing children.",
+      "To deserialize, use a queue of nodes; for each node, the next two values in the stream are its left and right children.",
+      "Alternatively, use preorder DFS: serialize with commas and 'N' for nulls, deserialize with a pointer/index into the split array."
+    ],
+    "optimalSolution": {
+      "python": "from collections import deque\nclass Codec:\n    def serialize(self, root):\n        if not root: return ''\n        res, q = [], deque([root])\n        while q:\n            node = q.popleft()\n            if node:\n                res.append(str(node.val))\n                q.append(node.left)\n                q.append(node.right)\n            else:\n                res.append('N')\n        return ','.join(res)\n\n    def deserialize(self, data):\n        if not data: return None\n        vals = data.split(',')\n        root = TreeNode(int(vals[0]))\n        q, i = deque([root]), 1\n        while q:\n            node = q.popleft()\n            if vals[i] != 'N':\n                node.left = TreeNode(int(vals[i]))\n                q.append(node.left)\n            i += 1\n            if vals[i] != 'N':\n                node.right = TreeNode(int(vals[i]))\n                q.append(node.right)\n            i += 1\n        return root",
+      "javascript": "var serialize = function(root) {\n    if (!root) return '';\n    const res = [], q = [root];\n    while (q.length) {\n        const node = q.shift();\n        if (node) { res.push(node.val); q.push(node.left, node.right); }\n        else res.push('N');\n    }\n    return res.join(',');\n};\nvar deserialize = function(data) {\n    if (!data) return null;\n    const vals = data.split(',');\n    const root = new TreeNode(+vals[0]);\n    const q = [root];\n    let i = 1;\n    while (q.length) {\n        const node = q.shift();\n        if (vals[i] !== 'N') { node.left = new TreeNode(+vals[i]); q.push(node.left); } i++;\n        if (vals[i] !== 'N') { node.right = new TreeNode(+vals[i]); q.push(node.right); } i++;\n    }\n    return root;\n};"
     }
   },
   {
@@ -1235,6 +1495,16 @@
         "(() => { const _r = isSubtree(0, 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = isSubtree(0, 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "At each node of root, check if the subtree rooted there is identical to subRoot.",
+      "Use your isSameTree helper \u2014 check it at every node of root.",
+      "Recursively try root.left and root.right if the current node doesn't match."
+    ],
+    "optimalSolution": {
+      "python": "def isSubtree(root, subRoot):\n    def same(a, b):\n        if not a and not b: return True\n        if not a or not b or a.val != b.val: return False\n        return same(a.left, b.left) and same(a.right, b.right)\n    if not root: return False\n    if same(root, subRoot): return True\n    return isSubtree(root.left, subRoot) or isSubtree(root.right, subRoot)",
+      "javascript": "var isSubtree = function(root, subRoot) {\n    function same(a, b) {\n        if (!a && !b) return true;\n        if (!a || !b || a.val !== b.val) return false;\n        return same(a.left, b.left) && same(a.right, b.right);\n    }\n    if (!root) return false;\n    if (same(root, subRoot)) return true;\n    return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);\n};"
     }
   },
   {
@@ -1281,6 +1551,16 @@
         "(() => { const _r = buildTree([0], [-1]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = buildTree([-1], [1000000, -1000000]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "The first element of preorder is always the root. Find it in inorder \u2014 everything to its left is the left subtree, everything to its right is the right subtree.",
+      "Recursively build left and right subtrees using the corresponding slices of preorder and inorder.",
+      "Use a hash map of inorder value \u2192 index to find the root's position in O(1) instead of O(n) linear search."
+    ],
+    "optimalSolution": {
+      "python": "def buildTree(preorder, inorder):\n    idx_map = {v: i for i, v in enumerate(inorder)}\n    pre_idx = [0]\n    def build(l, r):\n        if l > r: return None\n        root_val = preorder[pre_idx[0]]\n        pre_idx[0] += 1\n        node = TreeNode(root_val)\n        mid = idx_map[root_val]\n        node.left = build(l, mid - 1)\n        node.right = build(mid + 1, r)\n        return node\n    return build(0, len(inorder) - 1)",
+      "javascript": "var buildTree = function(preorder, inorder) {\n    const idxMap = {};\n    inorder.forEach((v, i) => idxMap[v] = i);\n    let preIdx = 0;\n    function build(l, r) {\n        if (l > r) return null;\n        const rootVal = preorder[preIdx++];\n        const node = new TreeNode(rootVal);\n        const mid = idxMap[rootVal];\n        node.left = build(l, mid - 1);\n        node.right = build(mid + 1, r);\n        return node;\n    }\n    return build(0, inorder.length - 1);\n};"
     }
   },
   {
@@ -1327,6 +1607,16 @@
         "(() => { const _r = isValidBST(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = isValidBST(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "Don't just check parent-child relationships \u2014 a node's value must be within a valid range inherited from all ancestors.",
+      "Pass a (min, max) bound down the recursion: root has (-\u221e, +\u221e), left child tightens the max, right child tightens the min.",
+      "Return false as soon as any node falls outside its bounds."
+    ],
+    "optimalSolution": {
+      "python": "def isValidBST(root):\n    def valid(node, lo, hi):\n        if not node: return True\n        if not (lo < node.val < hi): return False\n        return valid(node.left, lo, node.val) and valid(node.right, node.val, hi)\n    return valid(root, float('-inf'), float('inf'))",
+      "javascript": "var isValidBST = function(root) {\n    function valid(node, lo, hi) {\n        if (!node) return true;\n        if (node.val <= lo || node.val >= hi) return false;\n        return valid(node.left, lo, node.val) && valid(node.right, node.val, hi);\n    }\n    return valid(root, -Infinity, Infinity);\n};"
     }
   },
   {
@@ -1373,6 +1663,16 @@
         "(() => { const _r = kthSmallest(0, -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = kthSmallest(0, 2147483647); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "In-order traversal of a BST visits nodes in ascending sorted order.",
+      "Do an in-order traversal, counting nodes visited \u2014 return the value when you reach the k-th.",
+      "You can stop early once k reaches 0 rather than traversing the entire tree."
+    ],
+    "optimalSolution": {
+      "python": "def kthSmallest(root, k):\n    stack = []\n    node = root\n    while stack or node:\n        while node:\n            stack.append(node)\n            node = node.left\n        node = stack.pop()\n        k -= 1\n        if k == 0: return node.val\n        node = node.right",
+      "javascript": "var kthSmallest = function(root, k) {\n    const stack = [];\n    let node = root;\n    while (stack.length || node) {\n        while (node) { stack.push(node); node = node.left; }\n        node = stack.pop();\n        if (--k === 0) return node.val;\n        node = node.right;\n    }\n};"
     }
   },
   {
@@ -1419,6 +1719,16 @@
         "(() => { const _r = lowestCommonAncestor(0, 1, -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = lowestCommonAncestor(0, -1, 2147483647); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trees",
+    "hints": [
+      "Exploit BST ordering: if both p and q are less than root, LCA is in the left subtree.",
+      "If both are greater than root, LCA is in the right subtree.",
+      "If they're on opposite sides (or one equals root), root is the LCA."
+    ],
+    "optimalSolution": {
+      "python": "def lowestCommonAncestor(root, p, q):\n    while root:\n        if p.val < root.val and q.val < root.val:\n            root = root.left\n        elif p.val > root.val and q.val > root.val:\n            root = root.right\n        else:\n            return root",
+      "javascript": "var lowestCommonAncestor = function(root, p, q) {\n    while (root) {\n        if (p.val < root.val && q.val < root.val) root = root.left;\n        else if (p.val > root.val && q.val > root.val) root = root.right;\n        else return root;\n    }\n};"
     }
   },
   {
@@ -1465,6 +1775,16 @@
         "(() => { const _r = implement_trie_prefix_tree(); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = implement_trie_prefix_tree(); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trie",
+    "hints": [
+      "Each Trie node holds an array (or map) of 26 children (one per letter) and an isEnd flag.",
+      "Insert: walk character by character, creating nodes as needed, set isEnd = true on the last node.",
+      "Search and startsWith: walk the characters \u2014 search also requires isEnd = true on the last node."
+    ],
+    "optimalSolution": {
+      "python": "class Trie:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def insert(self, word):\n        node = self\n        for c in word:\n            if c not in node.children:\n                node.children[c] = Trie()\n            node = node.children[c]\n        node.is_end = True\n\n    def search(self, word):\n        node = self\n        for c in word:\n            if c not in node.children: return False\n            node = node.children[c]\n        return node.is_end\n\n    def startsWith(self, prefix):\n        node = self\n        for c in prefix:\n            if c not in node.children: return False\n            node = node.children[c]\n        return True",
+      "javascript": "class Trie {\n    constructor() { this.children = {}; this.isEnd = false; }\n    insert(word) {\n        let node = this;\n        for (const c of word) {\n            if (!node.children[c]) node.children[c] = new Trie();\n            node = node.children[c];\n        }\n        node.isEnd = true;\n    }\n    search(word) {\n        let node = this;\n        for (const c of word) {\n            if (!node.children[c]) return false;\n            node = node.children[c];\n        }\n        return node.isEnd;\n    }\n    startsWith(prefix) {\n        let node = this;\n        for (const c of prefix) {\n            if (!node.children[c]) return false;\n            node = node.children[c];\n        }\n        return true;\n    }\n}"
     }
   },
   {
@@ -1511,6 +1831,16 @@
         "(() => { const _r = design_add_and_search_words_data_structure(); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = design_add_and_search_words_data_structure(); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trie",
+    "hints": [
+      "Build a Trie for addWord; the challenge is handling '.' wildcards in search.",
+      "For '.' during search, try all 26 possible children recursively.",
+      "Regular characters follow standard Trie traversal."
+    ],
+    "optimalSolution": {
+      "python": "class WordDictionary:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\n    def addWord(self, word):\n        node = self\n        for c in word:\n            if c not in node.children:\n                node.children[c] = WordDictionary()\n            node = node.children[c]\n        node.is_end = True\n\n    def search(self, word):\n        def dfs(node, i):\n            if i == len(word): return node.is_end\n            c = word[i]\n            if c == '.':\n                return any(dfs(child, i + 1) for child in node.children.values())\n            if c not in node.children: return False\n            return dfs(node.children[c], i + 1)\n        return dfs(self, 0)",
+      "javascript": "class WordDictionary {\n    constructor() { this.children = {}; this.isEnd = false; }\n    addWord(word) {\n        let node = this;\n        for (const c of word) {\n            if (!node.children[c]) node.children[c] = new WordDictionary();\n            node = node.children[c];\n        }\n        node.isEnd = true;\n    }\n    search(word) {\n        function dfs(node, i) {\n            if (i === word.length) return node.isEnd;\n            const c = word[i];\n            if (c === '.') return Object.values(node.children).some(child => dfs(child, i + 1));\n            if (!node.children[c]) return false;\n            return dfs(node.children[c], i + 1);\n        }\n        return dfs(this, 0);\n    }\n}"
     }
   },
   {
@@ -1557,6 +1887,16 @@
         "(() => { const _r = findWords(0, [\"\", \"a\", \"ab\"]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = findWords(0, [\"abc\", \"bca\", \"cab\"]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Trie",
+    "hints": [
+      "Build a Trie from the word list \u2014 this lets you prune DFS paths that can't lead to any word.",
+      "For each cell, start a DFS; follow the Trie node as you expand, backtracking when no Trie child exists.",
+      "When you reach an isEnd node, add the word to results and clear isEnd to avoid duplicates."
+    ],
+    "optimalSolution": {
+      "python": "def findWords(board, words):\n    root = {}\n    for w in words:\n        node = root\n        for c in w:\n            node = node.setdefault(c, {})\n        node['#'] = w\n\n    rows, cols = len(board), len(board[0])\n    res = []\n\n    def dfs(node, r, c):\n        ch = board[r][c]\n        if ch not in node: return\n        nxt = node[ch]\n        if '#' in nxt:\n            res.append(nxt.pop('#'))\n        board[r][c] = '#'\n        for dr, dc in [(0,1),(0,-1),(1,0),(-1,0)]:\n            nr, nc = r+dr, c+dc\n            if 0 <= nr < rows and 0 <= nc < cols and board[nr][nc] != '#':\n                dfs(nxt, nr, nc)\n        board[r][c] = ch\n\n    for r in range(rows):\n        for c in range(cols):\n            dfs(root, r, c)\n    return res",
+      "javascript": "var findWords = function(board, words) {\n    const root = {};\n    for (const w of words) {\n        let node = root;\n        for (const c of w) { if (!node[c]) node[c] = {}; node = node[c]; }\n        node['#'] = w;\n    }\n    const [rows, cols] = [board.length, board[0].length];\n    const res = [];\n    function dfs(node, r, c) {\n        const ch = board[r][c];\n        if (!node[ch]) return;\n        const nxt = node[ch];\n        if ('#' in nxt) { res.push(nxt['#']); delete nxt['#']; }\n        board[r][c] = '#';\n        for (const [dr, dc] of [[0,1],[0,-1],[1,0],[-1,0]]) {\n            const [nr, nc] = [r+dr, c+dc];\n            if (nr>=0 && nr<rows && nc>=0 && nc<cols && board[nr][nc]!=='#') dfs(nxt, nr, nc);\n        }\n        board[r][c] = ch;\n    }\n    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) dfs(root, r, c);\n    return res;\n};"
     }
   },
   {
@@ -1603,6 +1943,16 @@
         "(() => { const _r = find_median_from_data_stream(); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = find_median_from_data_stream(); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Heap",
+    "hints": [
+      "Maintain two heaps: a max-heap for the lower half, a min-heap for the upper half.",
+      "Keep them balanced: the max-heap can have at most one extra element.",
+      "The median is either the top of the max-heap (odd total) or the average of both tops (even total)."
+    ],
+    "optimalSolution": {
+      "python": "import heapq\nclass MedianFinder:\n    def __init__(self):\n        self.small = []  # max-heap (negate values)\n        self.large = []  # min-heap\n\n    def addNum(self, num):\n        heapq.heappush(self.small, -num)\n        if self.small and self.large and (-self.small[0] > self.large[0]):\n            heapq.heappush(self.large, -heapq.heappop(self.small))\n        if len(self.small) > len(self.large) + 1:\n            heapq.heappush(self.large, -heapq.heappop(self.small))\n        if len(self.large) > len(self.small):\n            heapq.heappush(self.small, -heapq.heappop(self.large))\n\n    def findMedian(self):\n        if len(self.small) > len(self.large):\n            return -self.small[0]\n        return (-self.small[0] + self.large[0]) / 2",
+      "javascript": "// JS has no built-in heap; use a MinHeap class\nclass MedianFinder {\n    constructor() {\n        // Simulate with sorted arrays for interview clarity\n        this.data = [];\n    }\n    addNum(num) {\n        let lo = 0, hi = this.data.length;\n        while (lo < hi) {\n            const mid = (lo + hi) >> 1;\n            if (this.data[mid] < num) lo = mid + 1; else hi = mid;\n        }\n        this.data.splice(lo, 0, num);\n    }\n    findMedian() {\n        const n = this.data.length, m = n >> 1;\n        return n % 2 ? this.data[m] : (this.data[m-1] + this.data[m]) / 2;\n    }\n}"
     }
   },
   {
@@ -1649,6 +1999,16 @@
         "(() => { const _r = topKFrequent([], 1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = topKFrequent([0], -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Heap",
+    "hints": [
+      "Count frequencies with a hash map, then find the top k by frequency.",
+      "A min-heap of size k gives O(n log k) \u2014 better than sorting all n elements.",
+      "Bucket sort trick: create buckets indexed by frequency (0 to n), iterate from high to low."
+    ],
+    "optimalSolution": {
+      "python": "def topKFrequent(nums, k):\n    count = {}\n    for n in nums:\n        count[n] = count.get(n, 0) + 1\n    buckets = [[] for _ in range(len(nums) + 1)]\n    for num, freq in count.items():\n        buckets[freq].append(num)\n    res = []\n    for i in range(len(buckets) - 1, 0, -1):\n        for n in buckets[i]:\n            res.append(n)\n            if len(res) == k:\n                return res",
+      "javascript": "var topKFrequent = function(nums, k) {\n    const count = {};\n    for (const n of nums) count[n] = (count[n] || 0) + 1;\n    const buckets = Array.from({length: nums.length + 1}, () => []);\n    for (const [num, freq] of Object.entries(count)) buckets[freq].push(+num);\n    const res = [];\n    for (let i = buckets.length - 1; i >= 0 && res.length < k; i--)\n        res.push(...buckets[i]);\n    return res.slice(0, k);\n};"
     }
   },
   {
@@ -1695,6 +2055,16 @@
         "(() => { const _r = findKthLargest([0], -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = findKthLargest([-1], 2147483647); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Heap",
+    "hints": [
+      "A min-heap of size k: push all elements, pop when size exceeds k. The top is the k-th largest.",
+      "Alternatively, QuickSelect achieves O(n) average: partition around a pivot, recurse on one side.",
+      "Python's heapq.nlargest(k, nums)[-1] is clean but less educational than implementing QuickSelect."
+    ],
+    "optimalSolution": {
+      "python": "import heapq\ndef findKthLargest(nums, k):\n    heap = []\n    for n in nums:\n        heapq.heappush(heap, n)\n        if len(heap) > k:\n            heapq.heappop(heap)\n    return heap[0]",
+      "javascript": "var findKthLargest = function(nums, k) {\n    nums.sort((a, b) => b - a);\n    return nums[k - 1];\n};"
     }
   },
   {
@@ -1741,6 +2111,16 @@
         "(() => { const _r = numIslands(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = numIslands(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Graphs",
+    "hints": [
+      "For each unvisited '1', do a DFS/BFS to mark the whole island as visited, then increment the count.",
+      "Mark visited cells by changing '1' to '0' (in-place) or using a separate visited set.",
+      "Each call to your DFS/BFS explores one full island."
+    ],
+    "optimalSolution": {
+      "python": "def numIslands(grid):\n    if not grid: return 0\n    rows, cols = len(grid), len(grid[0])\n    count = 0\n    def dfs(r, c):\n        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != '1': return\n        grid[r][c] = '0'\n        dfs(r+1, c); dfs(r-1, c); dfs(r, c+1); dfs(r, c-1)\n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] == '1':\n                dfs(r, c)\n                count += 1\n    return count",
+      "javascript": "var numIslands = function(grid) {\n    if (!grid.length) return 0;\n    const [rows, cols] = [grid.length, grid[0].length];\n    let count = 0;\n    function dfs(r, c) {\n        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] !== '1') return;\n        grid[r][c] = '0';\n        dfs(r+1,c); dfs(r-1,c); dfs(r,c+1); dfs(r,c-1);\n    }\n    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++)\n        if (grid[r][c] === '1') { dfs(r, c); count++; }\n    return count;\n};"
     }
   },
   {
@@ -1787,6 +2167,16 @@
         "(() => { const _r = cloneGraph(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = cloneGraph(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Graphs",
+    "hints": [
+      "Use a hash map from original node \u2192 cloned node to handle cycles and avoid infinite loops.",
+      "DFS or BFS: clone the current node, then recursively clone all neighbors.",
+      "Before cloning a neighbor, check if it's already in the map \u2014 if so, reuse the existing clone."
+    ],
+    "optimalSolution": {
+      "python": "def cloneGraph(node):\n    if not node: return None\n    visited = {}\n    def dfs(n):\n        if n in visited: return visited[n]\n        clone = Node(n.val)\n        visited[n] = clone\n        for nb in n.neighbors:\n            clone.neighbors.append(dfs(nb))\n        return clone\n    return dfs(node)",
+      "javascript": "var cloneGraph = function(node) {\n    if (!node) return null;\n    const visited = new Map();\n    function dfs(n) {\n        if (visited.has(n)) return visited.get(n);\n        const clone = new Node(n.val);\n        visited.set(n, clone);\n        for (const nb of n.neighbors) clone.neighbors.push(dfs(nb));\n        return clone;\n    }\n    return dfs(node);\n};"
     }
   },
   {
@@ -1833,6 +2223,16 @@
         "(() => { const _r = pacificAtlantic(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = pacificAtlantic(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Graphs",
+    "hints": [
+      "Instead of simulating water flow downhill, reverse the problem: find cells reachable from each ocean going uphill.",
+      "BFS/DFS from all Pacific border cells (top row + left col), then from all Atlantic border cells (bottom row + right col).",
+      "The answer is the intersection of cells reachable from both oceans."
+    ],
+    "optimalSolution": {
+      "python": "from collections import deque\ndef pacificAtlantic(heights):\n    rows, cols = len(heights), len(heights[0])\n    def bfs(starts):\n        visited = set(starts)\n        q = deque(starts)\n        while q:\n            r, c = q.popleft()\n            for dr, dc in [(1,0),(-1,0),(0,1),(0,-1)]:\n                nr, nc = r+dr, c+dc\n                if 0<=nr<rows and 0<=nc<cols and (nr,nc) not in visited and heights[nr][nc]>=heights[r][c]:\n                    visited.add((nr,nc))\n                    q.append((nr,nc))\n        return visited\n    pac = bfs([(r,0) for r in range(rows)] + [(0,c) for c in range(cols)])\n    atl = bfs([(r,cols-1) for r in range(rows)] + [(rows-1,c) for c in range(cols)])\n    return [[r,c] for r,c in pac & atl]",
+      "javascript": "var pacificAtlantic = function(heights) {\n    const [rows, cols] = [heights.length, heights[0].length];\n    function bfs(starts) {\n        const visited = new Set(starts.map(([r,c]) => r*cols+c));\n        const q = [...starts];\n        while (q.length) {\n            const [r, c] = q.shift();\n            for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {\n                const [nr, nc] = [r+dr, c+dc];\n                const key = nr*cols+nc;\n                if (nr>=0&&nr<rows&&nc>=0&&nc<cols&&!visited.has(key)&&heights[nr][nc]>=heights[r][c])\n                { visited.add(key); q.push([nr,nc]); }\n            }\n        }\n        return visited;\n    }\n    const pac = bfs([...Array(rows).keys()].map(r=>[r,0]).concat([...Array(cols).keys()].map(c=>[0,c])));\n    const atl = bfs([...Array(rows).keys()].map(r=>[r,cols-1]).concat([...Array(cols).keys()].map(c=>[rows-1,c])));\n    return [...pac].filter(k => atl.has(k)).map(k => [Math.floor(k/cols), k%cols]);\n};"
     }
   },
   {
@@ -1879,6 +2279,16 @@
         "(() => { const _r = canFinish(1, 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = canFinish(-1, 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Graphs",
+    "hints": [
+      "This is a cycle detection problem on a directed graph: can you complete all courses = is there no cycle?",
+      "Build an adjacency list, then do DFS with a 'currently visiting' set to detect back edges (cycles).",
+      "Alternatively, use Kahn's algorithm (topological sort via BFS with in-degree counts)."
+    ],
+    "optimalSolution": {
+      "python": "def canFinish(numCourses, prerequisites):\n    adj = [[] for _ in range(numCourses)]\n    for a, b in prerequisites:\n        adj[b].append(a)\n    visiting = set()\n    visited = set()\n    def dfs(node):\n        if node in visiting: return False\n        if node in visited: return True\n        visiting.add(node)\n        for nei in adj[node]:\n            if not dfs(nei): return False\n        visiting.remove(node)\n        visited.add(node)\n        return True\n    return all(dfs(i) for i in range(numCourses))",
+      "javascript": "var canFinish = function(numCourses, prerequisites) {\n    const adj = Array.from({length: numCourses}, () => []);\n    for (const [a, b] of prerequisites) adj[b].push(a);\n    const visiting = new Set(), visited = new Set();\n    function dfs(node) {\n        if (visiting.has(node)) return false;\n        if (visited.has(node)) return true;\n        visiting.add(node);\n        for (const nei of adj[node]) if (!dfs(nei)) return false;\n        visiting.delete(node); visited.add(node);\n        return true;\n    }\n    for (let i = 0; i < numCourses; i++) if (!dfs(i)) return false;\n    return true;\n};"
     }
   },
   {
@@ -1918,6 +2328,16 @@
         "if (countComponents(4, [[0, 1], [1, 2], [2, 3]]) !== 1) throw new Error('Failed');",
         "if (countComponents(3, [[0, 1], [0, 2]]) !== 1) throw new Error('Failed');"
       ]
+    },
+    "topic": "Graphs",
+    "hints": [
+      "Use Union-Find (Disjoint Set Union) for O(\u03b1\u00b7n) per operation, or plain DFS/BFS.",
+      "DFS approach: iterate over all nodes, run DFS on unvisited ones, increment count each time.",
+      "Union-Find: initialize n components, union each edge, count distinct roots at the end."
+    ],
+    "optimalSolution": {
+      "python": "def countComponents(n, edges):\n    parent = list(range(n))\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n    def union(a, b):\n        pa, pb = find(a), find(b)\n        if pa == pb: return 0\n        parent[pa] = pb\n        return 1\n    return n - sum(union(a, b) for a, b in edges)",
+      "javascript": "var countComponents = function(n, edges) {\n    const parent = Array.from({length: n}, (_, i) => i);\n    function find(x) {\n        while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }\n        return x;\n    }\n    let count = n;\n    for (const [a, b] of edges) {\n        const [pa, pb] = [find(a), find(b)];\n        if (pa !== pb) { parent[pa] = pb; count--; }\n    }\n    return count;\n};"
     }
   },
   {
@@ -1952,6 +2372,16 @@
         "if (validTree(3, [[0, 1]]) !== false) throw new Error('Failed');",
         "if (validTree(4, [[0, 1], [1, 2], [2, 3]]) !== true) throw new Error('Failed');"
       ]
+    },
+    "topic": "Graphs",
+    "hints": [
+      "A valid tree has exactly n-1 edges and is connected (no cycles, one component).",
+      "Check edge count first; then verify no cycle using DFS or Union-Find.",
+      "With Union-Find: if any union operation finds both nodes already in the same component, there's a cycle."
+    ],
+    "optimalSolution": {
+      "python": "def validTree(n, edges):\n    if len(edges) != n - 1: return False\n    parent = list(range(n))\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n    for a, b in edges:\n        pa, pb = find(a), find(b)\n        if pa == pb: return False\n        parent[pa] = pb\n    return True",
+      "javascript": "var validTree = function(n, edges) {\n    if (edges.length !== n - 1) return false;\n    const parent = Array.from({length: n}, (_, i) => i);\n    function find(x) {\n        while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }\n        return x;\n    }\n    for (const [a, b] of edges) {\n        const [pa, pb] = [find(a), find(b)];\n        if (pa === pb) return false;\n        parent[pa] = pb;\n    }\n    return true;\n};"
     }
   },
   {
@@ -1998,6 +2428,16 @@
         "(() => { const _r = longestConsecutive([]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = longestConsecutive([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Graphs",
+    "hints": [
+      "Put all numbers in a hash set for O(1) lookup.",
+      "Only start a sequence from a number n where n-1 is NOT in the set \u2014 that's the true start of a sequence.",
+      "From the start, extend the sequence by checking n+1, n+2, ... until the chain breaks."
+    ],
+    "optimalSolution": {
+      "python": "def longestConsecutive(nums):\n    num_set = set(nums)\n    best = 0\n    for n in num_set:\n        if n - 1 not in num_set:\n            cur = n\n            length = 1\n            while cur + 1 in num_set:\n                cur += 1\n                length += 1\n            best = max(best, length)\n    return best",
+      "javascript": "var longestConsecutive = function(nums) {\n    const s = new Set(nums);\n    let best = 0;\n    for (const n of s) {\n        if (!s.has(n - 1)) {\n            let cur = n, len = 1;\n            while (s.has(cur + 1)) { cur++; len++; }\n            best = Math.max(best, len);\n        }\n    }\n    return best;\n};"
     }
   },
   {
@@ -2028,6 +2468,16 @@
         "if (alienOrder(['z', 'x', 'z']) !== '') throw new Error('Failed');",
         "if (alienOrder(['abc', 'ab']) !== '') throw new Error('Failed');"
       ]
+    },
+    "topic": "Graphs",
+    "hints": [
+      "Build a directed graph of character ordering by comparing adjacent words letter by letter \u2014 first differing character gives you an edge.",
+      "Watch for the invalid case: if word A is a prefix of word B but appears after it in the list, return ''.",
+      "Topological sort (Kahn's or DFS) on the character graph gives the order; a cycle means '' (invalid)."
+    ],
+    "optimalSolution": {
+      "python": "from collections import defaultdict, deque\ndef alienOrder(words):\n    adj = {c: set() for w in words for c in w}\n    for i in range(len(words) - 1):\n        w1, w2 = words[i], words[i+1]\n        min_len = min(len(w1), len(w2))\n        if len(w1) > len(w2) and w1[:min_len] == w2[:min_len]:\n            return ''\n        for j in range(min_len):\n            if w1[j] != w2[j]:\n                adj[w1[j]].add(w2[j])\n                break\n    in_deg = {c: 0 for c in adj}\n    for neighbors in adj.values():\n        for nb in neighbors:\n            in_deg[nb] += 1\n    q = deque([c for c in in_deg if in_deg[c] == 0])\n    res = []\n    while q:\n        c = q.popleft()\n        res.append(c)\n        for nb in adj[c]:\n            in_deg[nb] -= 1\n            if in_deg[nb] == 0:\n                q.append(nb)\n    return ''.join(res) if len(res) == len(adj) else ''",
+      "javascript": "var alienOrder = function(words) {\n    const adj = {};\n    for (const w of words) for (const c of w) if (!(c in adj)) adj[c] = new Set();\n    for (let i = 0; i < words.length - 1; i++) {\n        const [w1, w2] = [words[i], words[i+1]];\n        const minLen = Math.min(w1.length, w2.length);\n        if (w1.length > w2.length && w1.slice(0, minLen) === w2.slice(0, minLen)) return '';\n        for (let j = 0; j < minLen; j++) if (w1[j] !== w2[j]) { adj[w1[j]].add(w2[j]); break; }\n    }\n    const inDeg = Object.fromEntries(Object.keys(adj).map(c => [c, 0]));\n    for (const nbs of Object.values(adj)) for (const nb of nbs) inDeg[nb]++;\n    const q = Object.keys(inDeg).filter(c => inDeg[c] === 0), res = [];\n    while (q.length) {\n        const c = q.shift(); res.push(c);\n        for (const nb of adj[c]) if (--inDeg[nb] === 0) q.push(nb);\n    }\n    return res.length === Object.keys(adj).length ? res.join('') : '';\n};"
     }
   },
   {
@@ -2074,6 +2524,16 @@
         "(() => { const _r = climbStairs(1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = climbStairs(-1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "To reach step n you came from step n-1 (took 1 step) or step n-2 (took 2 steps).",
+      "f(n) = f(n-1) + f(n-2) \u2014 this is the Fibonacci recurrence.",
+      "Bottom-up DP with O(1) space: track just the last two values."
+    ],
+    "optimalSolution": {
+      "python": "def climbStairs(n):\n    a, b = 1, 1\n    for _ in range(n - 1):\n        a, b = b, a + b\n    return b",
+      "javascript": "var climbStairs = function(n) {\n    let a = 1, b = 1;\n    for (let i = 1; i < n; i++) [a, b] = [b, a + b];\n    return b;\n};"
     }
   },
   {
@@ -2120,6 +2580,16 @@
         "(() => { const _r = coinChange([], 1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = coinChange([0], -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "Classic unbounded knapsack DP: dp[i] = minimum coins to make amount i.",
+      "For each amount from 1 to target, try every coin; dp[i] = min(dp[i], dp[i - coin] + 1).",
+      "Initialize dp[0] = 0, everything else = infinity; return dp[amount] (-1 if still infinity)."
+    ],
+    "optimalSolution": {
+      "python": "def coinChange(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        for c in coins:\n            if c <= i:\n                dp[i] = min(dp[i], dp[i - c] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+      "javascript": "var coinChange = function(coins, amount) {\n    const dp = new Array(amount + 1).fill(Infinity);\n    dp[0] = 0;\n    for (let i = 1; i <= amount; i++)\n        for (const c of coins)\n            if (c <= i) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n    return dp[amount] === Infinity ? -1 : dp[amount];\n};"
     }
   },
   {
@@ -2166,6 +2636,16 @@
         "(() => { const _r = lengthOfLIS([]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = lengthOfLIS([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "Classic DP: dp[i] = length of LIS ending at index i; dp[i] = 1 + max(dp[j]) for all j < i where nums[j] < nums[i].",
+      "The O(n\u00b2) DP is straightforward; to get O(n log n), use patience sorting with binary search.",
+      "O(n log n): maintain a 'tails' array where tails[i] is the smallest tail of all IS of length i+1; binary search to update."
+    ],
+    "optimalSolution": {
+      "python": "import bisect\ndef lengthOfLIS(nums):\n    tails = []\n    for n in nums:\n        pos = bisect.bisect_left(tails, n)\n        if pos == len(tails):\n            tails.append(n)\n        else:\n            tails[pos] = n\n    return len(tails)",
+      "javascript": "var lengthOfLIS = function(nums) {\n    const tails = [];\n    for (const n of nums) {\n        let lo = 0, hi = tails.length;\n        while (lo < hi) { const mid = (lo+hi)>>1; if (tails[mid] < n) lo = mid+1; else hi = mid; }\n        tails[lo] = n;\n    }\n    return tails.length;\n};"
     }
   },
   {
@@ -2212,6 +2692,16 @@
         "(() => { const _r = wordBreak(\"\", 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = wordBreak(\"a\", 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "dp[i] = true if s[0..i-1] can be segmented. dp[0] = true (empty string).",
+      "For each i, try every j < i: if dp[j] is true and s[j..i-1] is in the word set, set dp[i] = true.",
+      "Store the word list in a set for O(1) lookup."
+    ],
+    "optimalSolution": {
+      "python": "def wordBreak(s, wordDict):\n    word_set = set(wordDict)\n    dp = [False] * (len(s) + 1)\n    dp[0] = True\n    for i in range(1, len(s) + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in word_set:\n                dp[i] = True\n                break\n    return dp[len(s)]",
+      "javascript": "var wordBreak = function(s, wordDict) {\n    const words = new Set(wordDict);\n    const dp = new Array(s.length + 1).fill(false);\n    dp[0] = true;\n    for (let i = 1; i <= s.length; i++)\n        for (let j = 0; j < i; j++)\n            if (dp[j] && words.has(s.slice(j, i))) { dp[i] = true; break; }\n    return dp[s.length];\n};"
     }
   },
   {
@@ -2258,6 +2748,16 @@
         "(() => { const _r = combinationSum4([0], -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = combinationSum4([-1], 2147483647); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "dp[i] = number of ordered combinations that sum to i.",
+      "dp[0] = 1 (one way to reach 0: use nothing). For each target i, sum dp[i - num] for all nums <= i.",
+      "Order matters here (unlike classic coin change count) \u2014 this is a permutation count."
+    ],
+    "optimalSolution": {
+      "python": "def combinationSum4(nums, target):\n    dp = [0] * (target + 1)\n    dp[0] = 1\n    for i in range(1, target + 1):\n        for n in nums:\n            if n <= i:\n                dp[i] += dp[i - n]\n    return dp[target]",
+      "javascript": "var combinationSum4 = function(nums, target) {\n    const dp = new Array(target + 1).fill(0);\n    dp[0] = 1;\n    for (let i = 1; i <= target; i++)\n        for (const n of nums)\n            if (n <= i) dp[i] += dp[i - n];\n    return dp[target];\n};"
     }
   },
   {
@@ -2304,6 +2804,16 @@
         "(() => { const _r = rob([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = rob([-1]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "At each house, you either rob it (can't rob previous) or skip it.",
+      "dp[i] = max(dp[i-1], dp[i-2] + nums[i]).",
+      "You only need the last two values \u2014 O(1) space."
+    ],
+    "optimalSolution": {
+      "python": "def rob(nums):\n    prev2 = prev1 = 0\n    for n in nums:\n        prev2, prev1 = prev1, max(prev1, prev2 + n)\n    return prev1",
+      "javascript": "var rob = function(nums) {\n    let prev2 = 0, prev1 = 0;\n    for (const n of nums) [prev2, prev1] = [prev1, Math.max(prev1, prev2 + n)];\n    return prev1;\n};"
     }
   },
   {
@@ -2350,6 +2860,16 @@
         "(() => { const _r = rob([]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = rob([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "The houses form a circle \u2014 first and last are adjacent so you can't rob both.",
+      "Break the circle by solving House Robber I twice: once on nums[0..n-2], once on nums[1..n-1].",
+      "Take the maximum of both results."
+    ],
+    "optimalSolution": {
+      "python": "def rob(nums):\n    def rob1(arr):\n        p2 = p1 = 0\n        for n in arr:\n            p2, p1 = p1, max(p1, p2 + n)\n        return p1\n    if len(nums) == 1: return nums[0]\n    return max(rob1(nums[:-1]), rob1(nums[1:]))",
+      "javascript": "var rob = function(nums) {\n    if (nums.length === 1) return nums[0];\n    function rob1(arr) {\n        let p2 = 0, p1 = 0;\n        for (const n of arr) [p2, p1] = [p1, Math.max(p1, p2 + n)];\n        return p1;\n    }\n    return Math.max(rob1(nums.slice(0, -1)), rob1(nums.slice(1)));\n};"
     }
   },
   {
@@ -2396,6 +2916,16 @@
         "(() => { const _r = numDecodings(\"\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = numDecodings(\"a\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "dp[i] = number of ways to decode s[0..i-1]. dp[0] = 1 (empty), dp[1] = 1 if s[0] != '0' else 0.",
+      "At each position, try decoding one digit (s[i-1]) and two digits (s[i-2..i-1]) \u2014 add to dp[i] if valid.",
+      "Single digit: valid if it's '1'\u2013'9'. Two digits: valid if it's '10'\u2013'26'."
+    ],
+    "optimalSolution": {
+      "python": "def numDecodings(s):\n    dp = [0] * (len(s) + 1)\n    dp[0] = 1\n    dp[1] = 1 if s[0] != '0' else 0\n    for i in range(2, len(s) + 1):\n        if s[i-1] != '0':\n            dp[i] += dp[i-1]\n        two = int(s[i-2:i])\n        if 10 <= two <= 26:\n            dp[i] += dp[i-2]\n    return dp[-1]",
+      "javascript": "var numDecodings = function(s) {\n    const dp = new Array(s.length + 1).fill(0);\n    dp[0] = 1;\n    dp[1] = s[0] !== '0' ? 1 : 0;\n    for (let i = 2; i <= s.length; i++) {\n        if (s[i-1] !== '0') dp[i] += dp[i-1];\n        const two = +s.slice(i-2, i);\n        if (two >= 10 && two <= 26) dp[i] += dp[i-2];\n    }\n    return dp[s.length];\n};"
     }
   },
   {
@@ -2442,6 +2972,16 @@
         "(() => { const _r = uniquePaths(1, -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = uniquePaths(-1, 2147483647); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "At each cell, the number of paths = paths from above + paths from left.",
+      "Initialize the first row and column to all 1s (only one way to reach any cell on the border).",
+      "Math shortcut: it's C(m+n-2, m-1) \u2014 choosing which steps go down out of all steps."
+    ],
+    "optimalSolution": {
+      "python": "def uniquePaths(m, n):\n    dp = [1] * n\n    for _ in range(m - 1):\n        for j in range(1, n):\n            dp[j] += dp[j - 1]\n    return dp[-1]",
+      "javascript": "var uniquePaths = function(m, n) {\n    const dp = new Array(n).fill(1);\n    for (let i = 1; i < m; i++)\n        for (let j = 1; j < n; j++)\n            dp[j] += dp[j - 1];\n    return dp[n - 1];\n};"
     }
   },
   {
@@ -2488,6 +3028,16 @@
         "(() => { const _r = canJump([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = canJump([-1]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Dynamic Programming",
+    "hints": [
+      "Greedy: track the furthest index you can reach as you scan left to right.",
+      "If at any point your current index exceeds the furthest reachable, you're stuck \u2014 return false.",
+      "If you reach or pass the last index, return true."
+    ],
+    "optimalSolution": {
+      "python": "def canJump(nums):\n    max_reach = 0\n    for i, n in enumerate(nums):\n        if i > max_reach: return False\n        max_reach = max(max_reach, i + n)\n    return True",
+      "javascript": "var canJump = function(nums) {\n    let maxReach = 0;\n    for (let i = 0; i < nums.length; i++) {\n        if (i > maxReach) return false;\n        maxReach = Math.max(maxReach, i + nums[i]);\n    }\n    return true;\n};"
     }
   },
   {
@@ -2534,6 +3084,16 @@
         "(() => { const _r = insert(0, [-1]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = insert(0, [1000000, -1000000]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Intervals",
+    "hints": [
+      "Walk through existing intervals in three phases: intervals entirely before the new one, the merge phase, intervals entirely after.",
+      "An interval ends before the new one if interval.end < newInterval.start. It starts after if interval.start > newInterval.end.",
+      "Merge by taking the min of starts and max of ends."
+    ],
+    "optimalSolution": {
+      "python": "def insert(intervals, newInterval):\n    res = []\n    for i, (start, end) in enumerate(intervals):\n        if newInterval[0] > end:\n            res.append([start, end])\n        elif newInterval[1] < start:\n            res.append(newInterval)\n            return res + intervals[i:]\n        else:\n            newInterval = [min(newInterval[0], start), max(newInterval[1], end)]\n    res.append(newInterval)\n    return res",
+      "javascript": "var insert = function(intervals, newInterval) {\n    const res = [];\n    for (let i = 0; i < intervals.length; i++) {\n        const [s, e] = intervals[i];\n        if (newInterval[0] > e) res.push([s, e]);\n        else if (newInterval[1] < s) { res.push(newInterval); return res.concat(intervals.slice(i)); }\n        else newInterval = [Math.min(newInterval[0], s), Math.max(newInterval[1], e)];\n    }\n    res.push(newInterval);\n    return res;\n};"
     }
   },
   {
@@ -2580,6 +3140,16 @@
         "(() => { const _r = merge(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = merge(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Intervals",
+    "hints": [
+      "Sort intervals by start time.",
+      "Maintain a result list; if the current interval's start <= last result's end, merge by extending the end.",
+      "Otherwise, the current interval doesn't overlap \u2014 just append it."
+    ],
+    "optimalSolution": {
+      "python": "def merge(intervals):\n    intervals.sort()\n    res = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= res[-1][1]:\n            res[-1][1] = max(res[-1][1], end)\n        else:\n            res.append([start, end])\n    return res",
+      "javascript": "var merge = function(intervals) {\n    intervals.sort((a, b) => a[0] - b[0]);\n    const res = [intervals[0]];\n    for (let i = 1; i < intervals.length; i++) {\n        const [s, e] = intervals[i];\n        if (s <= res[res.length-1][1]) res[res.length-1][1] = Math.max(res[res.length-1][1], e);\n        else res.push([s, e]);\n    }\n    return res;\n};"
     }
   },
   {
@@ -2626,6 +3196,16 @@
         "(() => { const _r = eraseOverlapIntervals(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = eraseOverlapIntervals(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Intervals",
+    "hints": [
+      "Greedy: sort by end time. Keep an interval if it doesn't overlap with the last kept interval.",
+      "When an overlap occurs, remove the interval with the later end (keep the one ending sooner \u2014 it leaves more room).",
+      "Count removals = total intervals - number kept."
+    ],
+    "optimalSolution": {
+      "python": "def eraseOverlapIntervals(intervals):\n    intervals.sort(key=lambda x: x[1])\n    count = 0\n    prev_end = float('-inf')\n    for start, end in intervals:\n        if start >= prev_end:\n            prev_end = end\n        else:\n            count += 1\n    return count",
+      "javascript": "var eraseOverlapIntervals = function(intervals) {\n    intervals.sort((a, b) => a[1] - b[1]);\n    let count = 0, prevEnd = -Infinity;\n    for (const [s, e] of intervals) {\n        if (s >= prevEnd) prevEnd = e;\n        else count++;\n    }\n    return count;\n};"
     }
   },
   {
@@ -2634,8 +3214,8 @@
     "difficulty": "Easy",
     "description": "",
     "starterCode": {
-      "python": "",
-      "javascript": ""
+      "python": "def canAttendMeetings(intervals: list[list[int]]) -> bool:\n    pass",
+      "javascript": "/**\n * @param {number[][]} intervals\n * @return {boolean}\n */\nvar canAttendMeetings = function(intervals) {\n\n};"
     },
     "testCases": {
       "python": [
@@ -2672,6 +3252,16 @@
         "(() => { const _r = canAttendMeetings(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = canAttendMeetings(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Intervals",
+    "hints": [
+      "Sort intervals by start time.",
+      "Check each adjacent pair \u2014 if the next meeting starts before the current one ends, there's a conflict.",
+      "One overlap found means return false immediately."
+    ],
+    "optimalSolution": {
+      "python": "def canAttendMeetings(intervals):\n    intervals.sort()\n    for i in range(1, len(intervals)):\n        if intervals[i][0] < intervals[i-1][1]:\n            return False\n    return True",
+      "javascript": "var canAttendMeetings = function(intervals) {\n    intervals.sort((a, b) => a[0] - b[0]);\n    for (let i = 1; i < intervals.length; i++)\n        if (intervals[i][0] < intervals[i-1][1]) return false;\n    return true;\n};"
     }
   },
   {
@@ -2680,8 +3270,8 @@
     "difficulty": "Medium",
     "description": "",
     "starterCode": {
-      "python": "",
-      "javascript": ""
+      "python": "def minMeetingRooms(intervals: list[list[int]]) -> int:\n    pass",
+      "javascript": "/**\n * @param {number[][]} intervals\n * @return {number}\n */\nvar minMeetingRooms = function(intervals) {\n\n};"
     },
     "testCases": {
       "python": [
@@ -2718,6 +3308,16 @@
         "(() => { const _r = minMeetingRooms(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = minMeetingRooms(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Intervals",
+    "hints": [
+      "The minimum rooms needed equals the maximum number of overlapping meetings at any point in time.",
+      "Use a min-heap of end times: for each new meeting (sorted by start), if its start >= the earliest end, reuse that room (pop). Otherwise, add a new room.",
+      "Alternatively, use the sweep-line / event approach: +1 on start, -1 on end, track the running maximum."
+    ],
+    "optimalSolution": {
+      "python": "import heapq\ndef minMeetingRooms(intervals):\n    intervals.sort()\n    heap = []\n    for start, end in intervals:\n        if heap and heap[0] <= start:\n            heapq.heapreplace(heap, end)\n        else:\n            heapq.heappush(heap, end)\n    return len(heap)",
+      "javascript": "var minMeetingRooms = function(intervals) {\n    const starts = intervals.map(i=>i[0]).sort((a,b)=>a-b);\n    const ends   = intervals.map(i=>i[1]).sort((a,b)=>a-b);\n    let rooms = 0, j = 0;\n    for (let i = 0; i < starts.length; i++) {\n        if (starts[i] < ends[j]) rooms++;\n        else j++;\n    }\n    return rooms;\n};"
     }
   },
   {
@@ -2764,6 +3364,16 @@
         "(() => { const _r = reverseList(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = reverseList(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Linked List",
+    "hints": [
+      "Iteratively: maintain prev = null, cur = head. On each step, save next, point cur.next to prev, advance both.",
+      "Recursively: reverse the rest of the list, then make the next node point back to current.",
+      "The iterative approach is O(1) space; the recursive approach uses O(n) stack space."
+    ],
+    "optimalSolution": {
+      "python": "def reverseList(head):\n    prev, cur = None, head\n    while cur:\n        nxt = cur.next\n        cur.next = prev\n        prev = cur\n        cur = nxt\n    return prev",
+      "javascript": "var reverseList = function(head) {\n    let prev = null, cur = head;\n    while (cur) {\n        const nxt = cur.next;\n        cur.next = prev;\n        prev = cur;\n        cur = nxt;\n    }\n    return prev;\n};"
     }
   },
   {
@@ -2810,6 +3420,16 @@
         "(() => { const _r = hasCycle(0, 1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = hasCycle(0, -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Linked List",
+    "hints": [
+      "Floyd's cycle detection: use two pointers \u2014 slow moves 1 step, fast moves 2 steps.",
+      "If there's a cycle, fast will eventually lap slow and they'll meet.",
+      "If fast reaches null (or fast.next is null), there's no cycle."
+    ],
+    "optimalSolution": {
+      "python": "def hasCycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False",
+      "javascript": "var hasCycle = function(head) {\n    let slow = head, fast = head;\n    while (fast && fast.next) {\n        slow = slow.next;\n        fast = fast.next.next;\n        if (slow === fast) return true;\n    }\n    return false;\n};"
     }
   },
   {
@@ -2856,6 +3476,16 @@
         "(() => { const _r = mergeTwoLists(0, 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = mergeTwoLists(0, 0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Linked List",
+    "hints": [
+      "Use a dummy head node to simplify edge cases.",
+      "Compare l1.val and l2.val, attach the smaller node to the result, advance that pointer.",
+      "When one list is exhausted, attach the remainder of the other directly."
+    ],
+    "optimalSolution": {
+      "python": "def mergeTwoLists(l1, l2):\n    dummy = cur = ListNode(0)\n    while l1 and l2:\n        if l1.val <= l2.val:\n            cur.next = l1; l1 = l1.next\n        else:\n            cur.next = l2; l2 = l2.next\n        cur = cur.next\n    cur.next = l1 or l2\n    return dummy.next",
+      "javascript": "var mergeTwoLists = function(l1, l2) {\n    const dummy = new ListNode(0);\n    let cur = dummy;\n    while (l1 && l2) {\n        if (l1.val <= l2.val) { cur.next = l1; l1 = l1.next; }\n        else { cur.next = l2; l2 = l2.next; }\n        cur = cur.next;\n    }\n    cur.next = l1 || l2;\n    return dummy.next;\n};"
     }
   },
   {
@@ -2902,6 +3532,16 @@
         "(() => { const _r = mergeKLists(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = mergeKLists(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Linked List",
+    "hints": [
+      "Use a min-heap to always extract the globally smallest node across all k lists.",
+      "Push each list's head into the heap, then repeatedly pop min, attach to result, push that node's next.",
+      "Divide-and-conquer: merge pairs of lists repeatedly \u2014 O(n log k) just like the heap approach."
+    ],
+    "optimalSolution": {
+      "python": "import heapq\ndef mergeKLists(lists):\n    dummy = cur = ListNode(0)\n    heap = []\n    for i, node in enumerate(lists):\n        if node:\n            heapq.heappush(heap, (node.val, i, node))\n    while heap:\n        val, i, node = heapq.heappop(heap)\n        cur.next = node\n        cur = cur.next\n        if node.next:\n            heapq.heappush(heap, (node.next.val, i, node.next))\n    return dummy.next",
+      "javascript": "var mergeKLists = function(lists) {\n    // Divide & conquer\n    function merge2(l1, l2) {\n        const dummy = new ListNode(0); let cur = dummy;\n        while (l1 && l2) {\n            if (l1.val <= l2.val) { cur.next = l1; l1 = l1.next; }\n            else { cur.next = l2; l2 = l2.next; }\n            cur = cur.next;\n        }\n        cur.next = l1 || l2;\n        return dummy.next;\n    }\n    while (lists.length > 1) {\n        const merged = [];\n        for (let i = 0; i < lists.length; i += 2)\n            merged.push(merge2(lists[i], lists[i+1] || null));\n        lists = merged;\n    }\n    return lists[0] || null;\n};"
     }
   },
   {
@@ -2948,6 +3588,16 @@
         "(() => { const _r = removeNthFromEnd(0, 1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = removeNthFromEnd(0, -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Linked List",
+    "hints": [
+      "Two-pointer technique: advance the fast pointer n steps ahead, then move both until fast reaches the end.",
+      "Use a dummy head so you don't need to special-case removing the first node.",
+      "When fast reaches null, slow is at the node just before the one to remove."
+    ],
+    "optimalSolution": {
+      "python": "def removeNthFromEnd(head, n):\n    dummy = ListNode(0, head)\n    slow = fast = dummy\n    for _ in range(n + 1):\n        fast = fast.next\n    while fast:\n        slow = slow.next\n        fast = fast.next\n    slow.next = slow.next.next\n    return dummy.next",
+      "javascript": "var removeNthFromEnd = function(head, n) {\n    const dummy = new ListNode(0, head);\n    let slow = dummy, fast = dummy;\n    for (let i = 0; i <= n; i++) fast = fast.next;\n    while (fast) { slow = slow.next; fast = fast.next; }\n    slow.next = slow.next.next;\n    return dummy.next;\n};"
     }
   },
   {
@@ -2994,6 +3644,16 @@
         "(() => { const _r = reorderList(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = reorderList(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Linked List",
+    "hints": [
+      "Find the middle of the list using slow/fast pointers, reverse the second half, then merge the two halves.",
+      "After finding mid, detach: mid.next = null. Reverse from mid+1 to end.",
+      "Interleave: take one from the first half, one from the reversed second half, repeat."
+    ],
+    "optimalSolution": {
+      "python": "def reorderList(head):\n    # Find middle\n    slow, fast = head, head.next\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n    # Reverse second half\n    second = slow.next\n    slow.next = None\n    prev = None\n    while second:\n        nxt = second.next\n        second.next = prev\n        prev = second\n        second = nxt\n    # Merge\n    first, second = head, prev\n    while second:\n        tmp1, tmp2 = first.next, second.next\n        first.next = second\n        second.next = tmp1\n        first = tmp1\n        second = tmp2",
+      "javascript": "var reorderList = function(head) {\n    let slow = head, fast = head.next;\n    while (fast && fast.next) { slow = slow.next; fast = fast.next.next; }\n    let second = slow.next; slow.next = null;\n    let prev = null;\n    while (second) { const nxt = second.next; second.next = prev; prev = second; second = nxt; }\n    let [first, sec] = [head, prev];\n    while (sec) {\n        const [t1, t2] = [first.next, sec.next];\n        first.next = sec; sec.next = t1;\n        first = t1; sec = t2;\n    }\n};"
     }
   },
   {
@@ -3040,6 +3700,16 @@
         "(() => { const _r = setZeroes(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = setZeroes(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Matrix",
+    "hints": [
+      "Naive approach uses O(mn) extra space. Better: use the first row and first column as markers.",
+      "First pass: record which rows/cols have zeros by marking their first-row/col cell.",
+      "Second pass: zero out cells based on markers; handle the first row and column separately."
+    ],
+    "optimalSolution": {
+      "python": "def setZeroes(matrix):\n    rows, cols = len(matrix), len(matrix[0])\n    first_row = any(matrix[0][c] == 0 for c in range(cols))\n    first_col = any(matrix[r][0] == 0 for r in range(rows))\n    for r in range(1, rows):\n        for c in range(1, cols):\n            if matrix[r][c] == 0:\n                matrix[r][0] = matrix[0][c] = 0\n    for r in range(1, rows):\n        for c in range(1, cols):\n            if matrix[r][0] == 0 or matrix[0][c] == 0:\n                matrix[r][c] = 0\n    if first_row:\n        for c in range(cols): matrix[0][c] = 0\n    if first_col:\n        for r in range(rows): matrix[r][0] = 0",
+      "javascript": "var setZeroes = function(matrix) {\n    const [rows, cols] = [matrix.length, matrix[0].length];\n    const firstRow = matrix[0].includes(0);\n    const firstCol = matrix.some(r => r[0] === 0);\n    for (let r = 1; r < rows; r++) for (let c = 1; c < cols; c++)\n        if (matrix[r][c] === 0) { matrix[r][0] = matrix[0][c] = 0; }\n    for (let r = 1; r < rows; r++) for (let c = 1; c < cols; c++)\n        if (matrix[r][0] === 0 || matrix[0][c] === 0) matrix[r][c] = 0;\n    if (firstRow) for (let c = 0; c < cols; c++) matrix[0][c] = 0;\n    if (firstCol) for (let r = 0; r < rows; r++) matrix[r][0] = 0;\n};"
     }
   },
   {
@@ -3086,6 +3756,16 @@
         "(() => { const _r = spiralOrder(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = spiralOrder(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Matrix",
+    "hints": [
+      "Use four boundaries: top, bottom, left, right. Traverse right, down, left, up, then shrink each boundary.",
+      "After each direction, check if boundaries have crossed before continuing.",
+      "Collect elements as you go; stop when the result has all m*n elements."
+    ],
+    "optimalSolution": {
+      "python": "def spiralOrder(matrix):\n    res = []\n    top, bottom, left, right = 0, len(matrix)-1, 0, len(matrix[0])-1\n    while top <= bottom and left <= right:\n        for c in range(left, right+1): res.append(matrix[top][c])\n        top += 1\n        for r in range(top, bottom+1): res.append(matrix[r][right])\n        right -= 1\n        if top <= bottom:\n            for c in range(right, left-1, -1): res.append(matrix[bottom][c])\n            bottom -= 1\n        if left <= right:\n            for r in range(bottom, top-1, -1): res.append(matrix[r][left])\n            left += 1\n    return res",
+      "javascript": "var spiralOrder = function(matrix) {\n    const res = [];\n    let [top, bottom, left, right] = [0, matrix.length-1, 0, matrix[0].length-1];\n    while (top <= bottom && left <= right) {\n        for (let c = left; c <= right; c++) res.push(matrix[top][c]); top++;\n        for (let r = top; r <= bottom; r++) res.push(matrix[r][right]); right--;\n        if (top <= bottom) { for (let c = right; c >= left; c--) res.push(matrix[bottom][c]); bottom--; }\n        if (left <= right) { for (let r = bottom; r >= top; r--) res.push(matrix[r][left]); left++; }\n    }\n    return res;\n};"
     }
   },
   {
@@ -3132,6 +3812,16 @@
         "(() => { const _r = rotate(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = rotate(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Matrix",
+    "hints": [
+      "90\u00b0 clockwise rotation = transpose + reverse each row.",
+      "Transpose: swap matrix[i][j] with matrix[j][i] for all i < j.",
+      "Then reverse each row in-place."
+    ],
+    "optimalSolution": {
+      "python": "def rotate(matrix):\n    n = len(matrix)\n    # Transpose\n    for i in range(n):\n        for j in range(i+1, n):\n            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]\n    # Reverse each row\n    for row in matrix:\n        row.reverse()",
+      "javascript": "var rotate = function(matrix) {\n    const n = matrix.length;\n    for (let i = 0; i < n; i++) for (let j = i+1; j < n; j++)\n        [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];\n    for (const row of matrix) row.reverse();\n};"
     }
   },
   {
@@ -3178,6 +3868,16 @@
         "(() => { const _r = exist(0, \"a\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = exist(0, \"aa\"); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Matrix",
+    "hints": [
+      "DFS from each cell that matches word[0]; mark cells as visited by temporarily altering the board.",
+      "At each step, try all 4 directions; backtrack by restoring the cell after the DFS call returns.",
+      "Prune early: if the current character doesn't match word[index], return false immediately."
+    ],
+    "optimalSolution": {
+      "python": "def exist(board, word):\n    rows, cols = len(board), len(board[0])\n    def dfs(r, c, i):\n        if i == len(word): return True\n        if r < 0 or r >= rows or c < 0 or c >= cols or board[r][c] != word[i]:\n            return False\n        tmp, board[r][c] = board[r][c], '#'\n        found = dfs(r+1,c,i+1) or dfs(r-1,c,i+1) or dfs(r,c+1,i+1) or dfs(r,c-1,i+1)\n        board[r][c] = tmp\n        return found\n    return any(dfs(r, c, 0) for r in range(rows) for c in range(cols))",
+      "javascript": "var exist = function(board, word) {\n    const [rows, cols] = [board.length, board[0].length];\n    function dfs(r, c, i) {\n        if (i === word.length) return true;\n        if (r<0||r>=rows||c<0||c>=cols||board[r][c]!==word[i]) return false;\n        const tmp = board[r][c]; board[r][c] = '#';\n        const found = dfs(r+1,c,i+1)||dfs(r-1,c,i+1)||dfs(r,c+1,i+1)||dfs(r,c-1,i+1);\n        board[r][c] = tmp;\n        return found;\n    }\n    for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) if(dfs(r,c,0)) return true;\n    return false;\n};"
     }
   },
   {
@@ -3224,6 +3924,16 @@
         "(() => { const _r = getSum(1, -1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = getSum(-1, 2147483647); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Bit Manipulation",
+    "hints": [
+      "Use bit manipulation: the sum without carry is a XOR b; the carry is (a AND b) << 1.",
+      "Repeat until there's no carry left (carry = 0).",
+      "In languages with 32-bit integers, mask intermediate values to &0xFFFFFFFF to handle negatives correctly."
+    ],
+    "optimalSolution": {
+      "python": "def getSum(a, b):\n    mask = 0xFFFFFFFF\n    while b & mask:\n        carry = (a & b) << 1\n        a = a ^ b\n        b = carry\n    # Handle negative numbers in Python\n    return a if b == 0 else a & mask if a > 0x7FFFFFFF else a",
+      "javascript": "var getSum = function(a, b) {\n    while (b) {\n        const carry = (a & b) << 1;\n        a = a ^ b;\n        b = carry;\n    }\n    return a;\n};"
     }
   },
   {
@@ -3270,6 +3980,16 @@
         "(() => { const _r = hammingWeight(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = hammingWeight(1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Bit Manipulation",
+    "hints": [
+      "Iterate through all 32 bits, checking each one with a mask.",
+      "Trick: n & (n-1) clears the lowest set bit. Count how many times you can do this before n = 0.",
+      "Python's bin(n).count('1') works but defeats the bit-manipulation practice."
+    ],
+    "optimalSolution": {
+      "python": "def hammingWeight(n):\n    count = 0\n    while n:\n        n &= n - 1\n        count += 1\n    return count",
+      "javascript": "var hammingWeight = function(n) {\n    let count = 0;\n    while (n) { n &= n - 1; count++; }\n    return count;\n};"
     }
   },
   {
@@ -3316,6 +4036,16 @@
         "(() => { const _r = countBits(1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = countBits(-1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Bit Manipulation",
+    "hints": [
+      "dp[i] = dp[i >> 1] + (i & 1): the count for i equals the count for i//2, plus 1 if i is odd.",
+      "This works because shifting right removes the last bit; the & 1 adds it back if it was 1.",
+      "O(n) time, O(n) output space \u2014 no bit-counting loop needed."
+    ],
+    "optimalSolution": {
+      "python": "def countBits(n):\n    dp = [0] * (n + 1)\n    for i in range(1, n + 1):\n        dp[i] = dp[i >> 1] + (i & 1)\n    return dp",
+      "javascript": "var countBits = function(n) {\n    const dp = new Array(n + 1).fill(0);\n    for (let i = 1; i <= n; i++) dp[i] = dp[i >> 1] + (i & 1);\n    return dp;\n};"
     }
   },
   {
@@ -3362,6 +4092,16 @@
         "(() => { const _r = reverseBits(1); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = reverseBits(-1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Bit Manipulation",
+    "hints": [
+      "Process the 32 bits one at a time: extract the last bit of n with n & 1, shift it into the result.",
+      "Shift result left and n right on each iteration.",
+      "After 32 iterations (not until n == 0), the result holds the reversed bits."
+    ],
+    "optimalSolution": {
+      "python": "def reverseBits(n):\n    res = 0\n    for _ in range(32):\n        res = (res << 1) | (n & 1)\n        n >>= 1\n    return res",
+      "javascript": "var reverseBits = function(n) {\n    let res = 0;\n    for (let i = 0; i < 32; i++) {\n        res = (res * 2 + (n & 1)) >>> 0;\n        n >>>= 1;\n    }\n    return res >>> 0;\n};"
     }
   },
   {
@@ -3408,6 +4148,16 @@
         "(() => { const _r = missingNumber([]); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = missingNumber([0]); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Bit Manipulation",
+    "hints": [
+      "Expected sum of [0..n] = n*(n+1)/2. Subtract the actual array sum \u2014 the difference is the missing number.",
+      "XOR approach: XOR all indices 0..n, then XOR all array values; duplicates cancel, leaving the missing number.",
+      "Both approaches are O(n) time, O(1) space."
+    ],
+    "optimalSolution": {
+      "python": "def missingNumber(nums):\n    n = len(nums)\n    return n * (n + 1) // 2 - sum(nums)",
+      "javascript": "var missingNumber = function(nums) {\n    const n = nums.length;\n    return n * (n + 1) / 2 - nums.reduce((a, b) => a + b, 0);\n};"
     }
   },
   {
@@ -3454,6 +4204,16 @@
         "(() => { const _r = reverse(0); if (_r === undefined) throw new Error('Got undefined'); return true; })()",
         "(() => { const _r = reverse(1); if (_r === undefined) throw new Error('Got undefined'); return true; })()"
       ]
+    },
+    "topic": "Bit Manipulation",
+    "hints": [
+      "Extract digits one by one using % 10 and build the reversed number by multiplying by 10 each step.",
+      "Before adding the next digit, check if the current result would overflow the 32-bit signed range [-2\u00b3\u00b9, 2\u00b3\u00b9-1].",
+      "In Python integers don't overflow, so just check the final result against the bounds."
+    ],
+    "optimalSolution": {
+      "python": "def reverse(x):\n    sign = -1 if x < 0 else 1\n    x = abs(x)\n    rev = int(str(x)[::-1])\n    rev *= sign\n    return rev if -(2**31) <= rev <= 2**31 - 1 else 0",
+      "javascript": "var reverse = function(x) {\n    const sign = x < 0 ? -1 : 1;\n    const rev = parseInt(Math.abs(x).toString().split('').reverse().join('')) * sign;\n    return rev >= -(2**31) && rev <= 2**31-1 ? rev : 0;\n};"
     }
   }
 ]

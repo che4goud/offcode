@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ProblemPanel from '../components/ProblemPanel';
 import EditorPanel from '../components/EditorPanel';
 import ConsolePanel from '../components/ConsolePanel';
+import SupportModal from '../components/SupportModal';
+import Resizer from '../components/Resizer';
+import ThemeToggle from '../components/ThemeToggle';
 import { executeCode } from '../services/executionService';
-import { saveCode, getCode } from '../services/storage';
-import { Settings, Play, Check } from 'lucide-react';
+import { saveCode, getCode, markSolved, getAllSolved } from '../services/storage';
+import ProblemSelector from '../components/ProblemSelector';
 import problems from '../data/blind75.json';
 import OfflineIndicator from '../components/OfflineIndicator';
 import { useNavigate } from 'react-router-dom';
@@ -16,8 +19,51 @@ function Editor() {
     const [code, setCode] = useState('');
     const [consoleOutput, setConsoleOutput] = useState('');
     const [isRunning, setIsRunning] = useState(false);
+    const [showSupportModal, setShowSupportModal] = useState(false);
+    const [solvedSet, setSolvedSet] = useState(new Set());
+
+    const [appTheme, setAppTheme] = useState(() => localStorage.getItem('offcode_theme') || 'dark');
+
+    // Keep appTheme in sync when ThemeToggle changes the DOM
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            const t = document.documentElement.getAttribute('data-theme');
+            setAppTheme(t === 'light' ? 'light' : 'dark');
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        return () => observer.disconnect();
+    }, []);
+
+    // Pane sizes: leftPct = left pane width %, editorPct = editor height % within right pane
+    const [leftPct, setLeftPct] = useState(40);
+    const [editorPct, setEditorPct] = useState(65);
+
+    const handleHorizontalResize = useCallback((delta) => {
+        setLeftPct(prev => {
+            const workspaceWidth = document.querySelector('.main-workspace')?.offsetWidth || window.innerWidth;
+            const newPct = prev + (delta / workspaceWidth) * 100;
+            return Math.min(Math.max(newPct, 20), 70);
+        });
+    }, []);
+
+    const handleVerticalResize = useCallback((delta) => {
+        setEditorPct(prev => {
+            const rightPane = document.querySelector('.right-pane')?.offsetHeight || window.innerHeight;
+            const newPct = prev + (delta / rightPane) * 100;
+            return Math.min(Math.max(newPct, 20), 80);
+        });
+    }, []);
+
+    // Load solved set from IndexedDB on mount
+    useEffect(() => {
+        getAllSolved().then(setSolvedSet);
+    }, []);
 
     const problem = problems[currentProblemIndex];
+
+    const handleProblemSelect = (idx) => {
+        setCurrentProblemIndex(idx);
+    };
 
     // Load code from IndexedDB or fallback to starter code
     useEffect(() => {
@@ -89,6 +135,12 @@ function Editor() {
                 const passed = res.results.filter(r => r.passed).length;
                 out += `\nPassed ${passed} / ${res.results.length} testcases.`;
 
+                // Mark solved if all tests pass
+                if (passed === res.results.length) {
+                    await markSolved(problem.id);
+                    setSolvedSet(prev => new Set([...prev, problem.id]));
+                }
+
                 // Show first failing test error
                 const firstFailed = res.results.find(r => !r.passed);
                 if (firstFailed) {
@@ -130,48 +182,69 @@ function Editor() {
     return (
         <div className="app-container">
             <header className="app-header panel">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <button className="btn btn-secondary" onClick={() => { localStorage.removeItem('offcode_onboarded'); navigate('/'); }} style={{ padding: '0.4rem 0.75rem' }} title="Home">🏠</button>
-                    <div className="brand-title">
-                        <Settings size={20} className="text-accent-primary" />
-                        OffCode
-                    </div>
+                {/* Top-left: theme toggle */}
+                <div style={{ position: 'absolute', top: '0.5rem', left: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <ThemeToggle />
+                    <button className="btn btn-secondary" onClick={() => { localStorage.removeItem('offcode_onboarded'); navigate('/'); }} style={{ padding: '0.3rem 0.6rem', fontSize: '0.85rem' }} title="Home">🏠</button>
+                </div>
+
+                {/* Top-right: coffee + online */}
+                <div style={{ position: 'absolute', top: '0.5rem', right: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <OfflineIndicator />
-                </div>
-                <div className="header-actions">
-                    <select
-                        value={currentProblemIndex}
-                        onChange={(e) => setCurrentProblemIndex(Number(e.target.value))}
-                        className="custom-select"
-                        style={{ marginRight: '1rem' }}
+                    <button
+                        onClick={() => setShowSupportModal(true)}
+                        title="Support OffCode"
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.35rem',
+                            background: '#FFDD00', color: '#1a1a1a',
+                            border: 'none', borderRadius: '8px',
+                            padding: '0.3rem 0.65rem', fontSize: '0.78rem',
+                            fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
+                        }}
                     >
-                        {problems.map((p, idx) => (
-                            <option key={p.id} value={idx}>{p.id}. {p.title}</option>
-                        ))}
-                    </select>
-                    <button className="btn btn-secondary" disabled={isRunning} onClick={handleRunCode} title="Cmd/Ctrl + Enter">
-                        {isRunning ? <div className="loader" /> : <Play size={16} />} Run Code
-                    </button>
-                    <button className="btn btn-success" disabled={isRunning} onClick={handleSubmitCode} title="Cmd/Ctrl + Shift + Enter">
-                        {isRunning ? <div className="loader" /> : <Check size={16} />} Submit
+                        ☕ Buy me a coffee
                     </button>
                 </div>
+
+                {/* Row 1: title */}
+                <div className="brand-title" style={{ fontSize: '1.1rem' }}>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--accent-primary, #3b82f6)', fontFamily: 'var(--font-mono)' }}>&lt;/&gt;</span>
+                    OffCode
+                </div>
+
+                {/* Row 2: problem selector */}
+                <ProblemSelector
+                    problems={problems}
+                    currentIndex={currentProblemIndex}
+                    solvedSet={solvedSet}
+                    onSelect={handleProblemSelect}
+                />
             </header>
 
+            {showSupportModal && (
+                <SupportModal onDismiss={() => setShowSupportModal(false)} />
+            )}
+
             <main className="main-workspace">
-                <div className="left-pane">
-                    <ProblemPanel problem={problem} />
+                <div className="left-pane" style={{ flex: 'none', width: `${leftPct}%` }}>
+                    <ProblemPanel problem={problem} language={language} />
                 </div>
-                <div className="right-pane">
-                    <div className="editor-container">
+                <Resizer direction="horizontal" onResize={handleHorizontalResize} />
+                <div className="right-pane" style={{ flex: 1 }}>
+                    <div className="editor-container" style={{ flex: 'none', height: `${editorPct}%` }}>
                         <EditorPanel
                             language={language}
                             setLanguage={setLanguage}
                             code={code}
                             setCode={setCode}
+                            monacoTheme={appTheme === 'light' ? 'vs' : 'vs-dark'}
+                            onRun={handleRunCode}
+                            onSubmit={handleSubmitCode}
+                            isRunning={isRunning}
                         />
                     </div>
-                    <div className="console-container">
+                    <Resizer direction="vertical" onResize={handleVerticalResize} />
+                    <div className="console-container" style={{ flex: 1 }}>
                         <ConsolePanel output={consoleOutput} />
                     </div>
                 </div>

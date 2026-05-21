@@ -49,6 +49,22 @@
   --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
 }
 
+[data-theme="light"] {
+  --bg-main: #f0f2f5;
+  --bg-panel: rgba(255, 255, 255, 0.75);
+  --bg-panel-border: rgba(0, 0, 0, 0.09);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+
+  --accent-primary: #2563eb;
+  --accent-secondary: #7c3aed;
+
+  --success: #059669;
+  --error: #dc2626;
+  --warning: #d97706;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -81,13 +97,40 @@ body {
 .panel-header {
   padding: 0.75rem 1.25rem;
   border-bottom: 1px solid var(--bg-panel-border);
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+[data-theme="light"] .panel-header {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .panel-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .panel-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .custom-select option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-secondary {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.09);
 }
 
 .panel-content {
@@ -124,44 +167,45 @@ body {
 }
 
 .app-header {
-  min-height: 64px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 0.35rem;
   padding: 0.5rem 1rem;
   background: var(--bg-panel);
   border: 1px solid var(--bg-panel-border);
   border-radius: 12px;
+  position: relative;
 }
 
 .main-workspace {
   display: flex;
   flex: 1;
-  gap: 0.5rem;
   min-height: 0;
+  overflow: hidden;
 }
 
 .left-pane {
-  flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
 }
 
 .right-pane {
-  flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  gap: 0.5rem;
+  min-width: 0;
 }
 
 .editor-container {
-  flex: 2;
+  min-height: 0;
 }
 
 .console-container {
-  flex: 1;
+  min-height: 0;
 }
 
 /* Generic Utilities */
