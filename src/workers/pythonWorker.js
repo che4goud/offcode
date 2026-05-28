@@ -32,6 +32,16 @@ self.onmessage = async function (e) {
         pyodide.setStdout({ batched: (str) => capturedLogs.push(str) });
         pyodide.setStderr({ batched: (str) => capturedLogs.push(str) });
 
+        // Inject common LeetCode imports so user code doesn't need to import them
+        await pyodide.runPythonAsync(
+            'from typing import *\n' +
+            'from collections import *\n' +
+            'from heapq import *\n' +
+            'from math import *\n' +
+            'from itertools import *\n' +
+            'from functools import *\n'
+        );
+
         // Run user code to define functions / class
         await pyodide.runPythonAsync(code);
 
